@@ -1,7 +1,9 @@
-name: smartclans
-version: 0.1
-author: nick
+name: SmartClans
+version: 0.0.2
+author: goldmensch
 main: de.nick.smartclans.main.Main
+api-version: 1.16
+prefix: SmartClans
 
 commands:
   clans:

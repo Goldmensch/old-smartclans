@@ -23,6 +23,10 @@ public class MessageManager {
 	public void addDefaults() {
 		defaults.put("prefix", "§6[Clans] §r");
 		defaults.put("command-exe-no-player", "§cThis command must be executed by a player.");
+		defaults.put("no-permission", "§cYou don't have permissions to do this.");
+		defaults.put("clan-created", "§aThe clan %clan% was created by %creator%.");
+		defaults.put("clan-already-exist", "§cThe clan %clan% already exists.");
+		defaults.put("player-already-in-Clan", "§cYou are already in a clan.");
 	}
 	
 	public void saveDefaults() {
@@ -55,6 +59,10 @@ public class MessageManager {
 	
 	public File getFile() {
 		return file;
+	}
+	
+	public String getRaw(String path) {
+		return config.getString(path);
 	}
 	
 	
