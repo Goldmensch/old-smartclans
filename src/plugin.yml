@@ -1,5 +1,5 @@
 name: SmartClans
-version: 0.0.2
+version: 0.0.3
 author: goldmensch
 main: de.nick.smartclans.main.Main
 api-version: 1.16
@@ -8,3 +8,4 @@ prefix: SmartClans
 commands:
   clans:
     description: The main command of smartclans.
+    aliases: clan

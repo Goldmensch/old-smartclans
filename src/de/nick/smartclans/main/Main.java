@@ -20,9 +20,9 @@ public class Main extends JavaPlugin{
 		messages = new MessageManager();
 		
 		/*-----files-----*/
-		if(!messages.getFile().exists()) {
+/*dev>>		if(!messages.getFile().exists()) {
 			messages.saveDefaults();
-		}
+		} */
 		messages.saveDefaults();
 		
 		//commnds
