@@ -37,14 +37,14 @@ public class DataManager {
 		clanconfig.set("members", members);
 		clanconfig.set("banned", new ArrayList<String>());
 		saveClanFile(clanfile);
-		savePlayerData();
-		setPlayerData(leader, clanname);
-		savePlayerData();
+		setPlayerData(leader, "clan", clanname);
+		setPlayerData(leader, "position", "leader");
 		return true;
 	}
 	
-	public void setPlayerData(Player p, String clan) {
-		playerconfig.set(p.getUniqueId().toString() + ".clan", clan);
+	public void setPlayerData(Player p, String path, Object value) {
+		playerconfig.set(p.getUniqueId().toString() + "." + path, value);
+		savePlayerData();
 	}
 	
 	public void savePlayerData() {
@@ -68,5 +68,23 @@ public class DataManager {
 			return true;
 		}else
 			return false;
+	}
+	
+	public boolean isLeader(Player p) {
+		if(playerconfig.getString(p.getUniqueId().toString() + ".position").equalsIgnoreCase("leader")) {
+			return true;
+		}else
+			return false;
+	}
+	
+	public String getClan(Player p) {
+		return playerconfig.getString(p.getUniqueId().toString() + ".clan");
+	}
+	
+	public void setClanData(String clan, String path, Object value) {
+		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
+		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		clanconfig.set(path, value);
+		saveClanFile(clanfile);
 	}
 }

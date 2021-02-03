@@ -27,6 +27,8 @@ public class MessageManager {
 		defaults.put("clan-created", "§aThe clan %clan% was created by %creator%.");
 		defaults.put("clan-already-exist", "§cThe clan %clan% already exists.");
 		defaults.put("player-already-in-Clan", "§cYou are already in a clan.");
+		defaults.put("player-not-in-Clan", "§cYou are not in a Clan.");
+		defaults.put("clan-description-was-set", "§aThe clan description was set.");
 	}
 	
 	public void saveDefaults() {
