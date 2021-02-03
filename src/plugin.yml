@@ -1,0 +1,8 @@
+name: smartclans
+version: 0.1
+author: nick
+main: de.nick.smartclans.main.Main
+
+commands:
+  clans:
+    description: The main command of smartclans.
