@@ -33,6 +33,7 @@ public class MessageManager {
 		defaults.put("player-not-online", "§cThe player %player% isn't online.");
 		defaults.put("player-not-in-same-clan", "§cThe player %player% isn't in the same Clan as you.");
 		defaults.put("you-are-now-coleader-of", "§aYou're now a coleader of %clan%.");
+		defaults.put("player-already-coleader-or-leader", "§cThe player %player% is already a leader or co leader.");
 	}
 	
 	public void saveDefaults() {
@@ -70,7 +71,5 @@ public class MessageManager {
 	public String getRaw(String path) {
 		return config.getString(path);
 	}
-	
-	
 	
 }

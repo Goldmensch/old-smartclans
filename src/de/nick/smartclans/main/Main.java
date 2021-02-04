@@ -27,6 +27,7 @@ public class Main extends JavaPlugin{
 		
 		//commnds
 		getCommand("clans").setExecutor(new ClansCommand());
+		getCommand("clans").setTabCompleter(new ClansCommand());
 		
 		
 	}

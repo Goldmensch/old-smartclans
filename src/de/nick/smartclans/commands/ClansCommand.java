@@ -1,17 +1,19 @@
 package de.nick.smartclans.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import de.nick.smartclans.data.DataManager;
 import de.nick.smartclans.messages.MessageManager;
 
-public class ClansCommand implements CommandExecutor{
+public class ClansCommand implements CommandExecutor, TabCompleter{
 	
 	private MessageManager messages;
 	private DataManager data;
@@ -52,7 +54,7 @@ public class ClansCommand implements CommandExecutor{
 			}else
 				p.sendMessage(messages.get("no-permission"));
 			return false;
-			}
+		}
 		/*----ClanSection----*/
 		if(!data.isInClan(p)) {
 			p.sendMessage(messages.get("player-not-in-Clan"));
@@ -78,16 +80,24 @@ public class ClansCommand implements CommandExecutor{
 					if(args[1].equalsIgnoreCase("coleader") && (args.length == 3)) {
 						Player target = Bukkit.getPlayer(args[2]);
 						List<String> coleaders = data.getCoLeaders(data.getClan(p));
+						//check if player online
 						if(target == null) {
 							p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
 							return false;
 						}	
+						//check if target in the same clan
 						if(!data.getClan(target).equalsIgnoreCase(data.getClan(p))) {
 							p.sendMessage(messages.get("player-not-in-same-clan").replace("%player%", target.getName()));
 							return false;
 						}
+						//check if target already leader or co leader
+						if(data.getPosition(p).equalsIgnoreCase("coleader") || data.getPosition(p).equalsIgnoreCase("leader")) {
+							p.sendMessage(messages.get("player-already-coleader-or-leader").replace("%player%", target.getName()));
+							return false;
+						}
 						coleaders.add(target.getUniqueId().toString());
 						data.setClanData(data.getClan(p), "co-leaders", coleaders);
+						data.setPlayerData(p, "position", "coleader");
 						target.sendMessage(messages.get("you-are-now-coleader-of").replace("%clan%", data.getClan(p)));
 						p.sendMessage(messages.get("co-leader-added").replace("%clan%", data.getClan(p)).replace("%coleader%", target.getName()));
 						return false;
@@ -101,5 +111,60 @@ public class ClansCommand implements CommandExecutor{
 		//TODO wrong arguments
 		return false;
 	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender s, Command cmd, String label, String[] args) {
+		List<String> completions = new ArrayList<String>();
+		//console + player
+		
+		
+		if(!(s instanceof Player)) {
+			switch (args.length) {
+			default:
+				break;
+			}
+			return completions;
+		}
+		//player
+		Player p = (Player)s;
+		
+		//everytime
+		
+		//in Clan
+		if(data.isInClan(p)) {
+			switch (args.length) {
+			case 1:
+				if(data.isLeader(p)) completions.add("set");
+				if(data.isLeader(p)) completions.add("add");
+				break;
+			case 2: 
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("set")) completions.add("description");
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("add")) completions.add("coleader");
+				break;
+			case 3:
+				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
+					for(Player target : Bukkit.getOnlinePlayers()) {
+						completions.add(target.getName());
+					}
+				}
+				break;
+			default:
+				break;
+			}
+			return completions;
+		}
+		
+		//no in Clan
+		switch (args.length) {
+		case 1:
+			if(s.hasPermission("smartclans.create")) completions.add("create");
+			break;
+		default:
+			break;
+		}
+		return completions;
+	}
+	
+	
 	
 }

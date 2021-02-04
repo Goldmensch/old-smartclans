@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -98,5 +99,9 @@ public class DataManager {
 		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
 		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
 		return clanconfig.getStringList("co-leaders");
+	}
+	
+	public String getPosition(Player p) {
+		return playerconfig.getString(p.getUniqueId().toString() + ".position");
 	}
 }
