@@ -31,7 +31,7 @@ public class DataManager {
 		clanconfig.set("name", clanname);
 		clanconfig.set("description", "!empty");
 		clanconfig.set("leader", leader.getUniqueId().toString());
-		clanconfig.set("co-leader", new ArrayList<String>());
+		clanconfig.set("co-leaders", new ArrayList<String>());
 		List<String> members = clanconfig.getStringList("members");
 		members.add(leader.getUniqueId().toString());
 		clanconfig.set("members", members);
@@ -86,5 +86,17 @@ public class DataManager {
 		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
 		clanconfig.set(path, value);
 		saveClanFile(clanfile);
+	}
+	
+	public Object getClanData(String clan, String path) {
+		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
+		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		return clanconfig.get(path);
+	}
+	
+	public List<String> getCoLeaders(String clan) {
+		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
+		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		return clanconfig.getStringList("co-leaders");
 	}
 }

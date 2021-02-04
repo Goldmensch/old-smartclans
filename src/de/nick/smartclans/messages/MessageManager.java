@@ -29,6 +29,10 @@ public class MessageManager {
 		defaults.put("player-already-in-Clan", "§cYou are already in a clan.");
 		defaults.put("player-not-in-Clan", "§cYou are not in a Clan.");
 		defaults.put("clan-description-was-set", "§aThe clan description was set.");
+		defaults.put("co-leader-added", "§aThe co-leader %coleader% has been added to %clan%.");
+		defaults.put("player-not-online", "§cThe player %player% isn't online.");
+		defaults.put("player-not-in-same-clan", "§cThe player %player% isn't in the same Clan as you.");
+		defaults.put("you-are-now-coleader-of", "§aYou're now a coleader of %clan%.");
 	}
 	
 	public void saveDefaults() {
