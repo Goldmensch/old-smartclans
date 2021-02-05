@@ -1,6 +1,5 @@
 package de.nick.smartclans.main;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.nick.smartclans.commands.*;
@@ -13,7 +12,6 @@ public class Main extends JavaPlugin{
 	
 	public void onEnable() {
 		//start
-		Bukkit.getConsoleSender().sendMessage("§6SmartClans §bby goldmensch has been §aactivated!");
 		
 		//general
 		plugin = this;

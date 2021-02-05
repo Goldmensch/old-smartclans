@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -28,6 +29,7 @@ public class DataManager {
 	}
 	
 	public void loadClans() {
+		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() + "] start loading the clan configs...");
 		File dir = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans");
 		File[] files = dir.listFiles();
 		if(files == null) return;
@@ -37,6 +39,7 @@ public class DataManager {
 			clansconfigs.put(files[i].getName(), YamlConfiguration.loadConfiguration(files[i]));
 			clansfiles.put(files[i].getName(), files[i]);
 		}
+		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() +  "]  " + files.length + " §rclans loaded.");
 	}
 	
 	public boolean createClan(String clanname, Player leader) {	
