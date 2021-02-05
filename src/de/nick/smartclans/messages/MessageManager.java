@@ -34,6 +34,8 @@ public class MessageManager {
 		defaults.put("player-not-in-same-clan", "§cThe player %player% isn't in the same Clan as you.");
 		defaults.put("you-are-now-coleader-of", "§aYou're now a coleader of %clan%.");
 		defaults.put("player-already-coleader-or-leader", "§cThe player %player% is already a leader or co leader.");
+		defaults.put("confirmname-not-match", "§cConfirmation failed! Clanname does not match.");
+		defaults.put("clan-deleted", "§aThe clan %clan% has been deleted.");
 	}
 	
 	public void saveDefaults() {

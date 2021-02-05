@@ -21,6 +21,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	public ClansCommand() {
 		messages = new MessageManager();
 		data = new DataManager();
+		data.loadClans();
 	}
 	
 	@Override
@@ -62,6 +63,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		}
 			/*---ClanLeader---*/
 			if(data.isLeader(p)) {
+				
 				//set clan description
 				if(args[0].equalsIgnoreCase("set") && (args.length >= 2)) {
 					if(args[1].equalsIgnoreCase("description") && (args.length > 3))  {
@@ -75,6 +77,19 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						return false;
 					}
 				}
+				//delete clan
+				if(args[0].equalsIgnoreCase("delete") && (args.length == 2)) {
+					if(p.hasPermission("smartclans.delete")) {
+						if(args[1].equalsIgnoreCase(data.getClan(p))) {
+							p.sendMessage(messages.get("clan-deleted").replace("%clan%", data.getClan(p)));
+							data.deleteClan(data.getClan(p));
+						}else
+							p.sendMessage(messages.get("confirmname-not-match"));
+					}else
+						p.sendMessage(messages.get("no-permission"));
+					return false;
+				}
+				
 				//add co leader
 				if(args[0].equalsIgnoreCase("add") && (args.length > 2)) {
 					if(args[1].equalsIgnoreCase("coleader") && (args.length == 3)) {
@@ -134,16 +149,18 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		if(data.isInClan(p)) {
 			switch (args.length) {
 			case 1:
-				if(data.isLeader(p)) completions.add("set");
-				if(data.isLeader(p)) completions.add("add");
+				if(data.isLeader(p) && "set".startsWith(args[0])) completions.add("set");
+				if(data.isLeader(p) && "add".startsWith(args[0])) completions.add("add");
+				if(data.isLeader(p) && "delete".startsWith(args[0])) completions.add("delete");
 				break;
 			case 2: 
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("set")) completions.add("description");
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("add")) completions.add("coleader");
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("add") && "coleader".startsWith(args[1])) completions.add("coleader");
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
 					for(Player target : Bukkit.getOnlinePlayers()) {
+						if(!target.getName().startsWith(args[2])) continue;
 						completions.add(target.getName());
 					}
 				}
@@ -157,7 +174,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		//no in Clan
 		switch (args.length) {
 		case 1:
-			if(s.hasPermission("smartclans.create")) completions.add("create");
+			if(s.hasPermission("smartclans.create") && "create".startsWith(args[0])) completions.add("create");
 			break;
 		default:
 			break;

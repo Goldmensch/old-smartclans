@@ -3,9 +3,9 @@ package de.nick.smartclans.data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -19,16 +19,30 @@ public class DataManager {
 	private File playerfile;
 	private YamlConfiguration playerconfig;
 	
+	private HashMap<String, YamlConfiguration> clansconfigs;
+	private HashMap<String, File> clansfiles;
+	
 	public DataManager() {
 		playerfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data", "playerdata.yml");
 		playerconfig = YamlConfiguration.loadConfiguration(playerfile);
 	}
 	
-	public boolean createClan(String clanname, Player leader) {
+	public void loadClans() {
+		File dir = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans");
+		File[] files = dir.listFiles();
+		if(files == null) return;
+		clansconfigs = new HashMap<String, YamlConfiguration>();
+		clansfiles = new HashMap<String, File>();
+		for(int i = 0; i < files.length; i++) {
+			clansconfigs.put(files[i].getName(), YamlConfiguration.loadConfiguration(files[i]));
+			clansfiles.put(files[i].getName(), files[i]);
+		}
+	}
+	
+	public boolean createClan(String clanname, Player leader) {	
 		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clanname + ".yml");
-		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
-		
-		if(clanfile.exists()) return false;
+		clanconfig = YamlConfiguration.loadConfiguration(clanfile);	
+		if(clanfile.exists()) return false;	
 		clanconfig.set("name", clanname);
 		clanconfig.set("description", "!empty");
 		clanconfig.set("leader", leader.getUniqueId().toString());
@@ -38,6 +52,8 @@ public class DataManager {
 		clanconfig.set("members", members);
 		clanconfig.set("banned", new ArrayList<String>());
 		saveClanFile(clanfile);
+		clansconfigs.put(clanfile.getName(), clanconfig);
+		clansfiles.put(clanfile.getName(), clanfile);
 		setPlayerData(leader, "clan", clanname);
 		setPlayerData(leader, "position", "leader");
 		return true;
@@ -83,25 +99,36 @@ public class DataManager {
 	}
 	
 	public void setClanData(String clan, String path, Object value) {
-		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
-		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		clanconfig = clansconfigs.get(clan + ".yml");
+		clanfile = clansfiles.get(clan + ".yml");
 		clanconfig.set(path, value);
 		saveClanFile(clanfile);
 	}
 	
 	public Object getClanData(String clan, String path) {
-		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
-		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		clanconfig = clansconfigs.get(clan + ".yml");
 		return clanconfig.get(path);
 	}
 	
 	public List<String> getCoLeaders(String clan) {
-		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clan + ".yml");
-		clanconfig = YamlConfiguration.loadConfiguration(clanfile);
+		clanconfig = clansconfigs.get(clan + ".yml");
 		return clanconfig.getStringList("co-leaders");
 	}
 	
 	public String getPosition(Player p) {
 		return playerconfig.getString(p.getUniqueId().toString() + ".position");
+	}
+	
+	public void deleteClan(String clan) {
+		clanconfig = clansconfigs.get(clan + ".yml");
+		clanfile = clansfiles.get(clan + ".yml");
+		for(String uuid : clanconfig.getStringList("members")) {
+			playerconfig.set(uuid + ".clan", null);
+			playerconfig.set(uuid + ".position", null);
+		}
+		savePlayerData();
+		clansconfigs.remove(clan + ".yml");
+		clansfiles.remove(clan + ".yml");
+		clanfile.delete();
 	}
 }

@@ -21,13 +21,15 @@ public class Main extends JavaPlugin{
 		
 		/*-----files-----*/
 /*dev>>		if(!messages.getFile().exists()) {
+ * 			messages = new MessageManager();
 			messages.saveDefaults();
 		} */
 		messages.saveDefaults();
 		
 		//commnds
-		getCommand("clans").setExecutor(new ClansCommand());
-		getCommand("clans").setTabCompleter(new ClansCommand());
+		ClansCommand clanscommand = new ClansCommand();
+		getCommand("clans").setExecutor(clanscommand);
+		getCommand("clans").setTabCompleter(clanscommand);
 		
 		
 	}
