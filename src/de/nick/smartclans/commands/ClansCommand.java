@@ -32,6 +32,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			return false;
 		}
 		/*-----ConsoleAndPlayerSection----*/
+		//reload
 		if(args[0].equalsIgnoreCase("reload") && (args.length == 1)) {
 			if(s.hasPermission("smartclans.reload")) {
 				data.loadClans();
@@ -42,9 +43,18 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				s.sendMessage(messages.get("no-permission"));
 			return false;
 		}
+		//info
+		if(args[0].equalsIgnoreCase("help")) {
+			for(String msg : getHelp(s)) {
+				s.sendMessage(msg);
+			}
+			return false;
+		}
 		/*----PlayerSection-----*/
 		if(!(s instanceof Player)) {
-			s.sendMessage(messages.get("command-exe-no-player"));
+			for(String msg : getHelp(s)) {
+				s.sendMessage(msg);
+			}
 			return false;
 		}
 		Player p = (Player)s;
@@ -68,7 +78,9 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		}
 		/*----ClanSection----*/
 		if(!data.isInClan(p)) {
-			p.sendMessage(messages.get("player-not-in-Clan"));
+			for(String msg : getHelp(s)) {
+				p.sendMessage(msg);
+			}
 			return false;
 		}
 			/*---ClanLeader---*/
@@ -133,16 +145,59 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			}
 		    /*---ClanCoLeader---*/
 			
-		//TODO wrong arguments
+		for(String msg : getHelp(s)) {
+			p.sendMessage(msg);
+		}
 		return false;
+	}
+	
+	public List<String> getHelp(CommandSender s) {
+		List<String> help = new ArrayList<String>();
+		help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
+		
+		//console + player
+		help.add(messages.getPrefix() + "§8/clans help");
+		help.add(messages.getPrefix() + "§8/clans info (clan)");
+		
+		//player
+		if(!(s instanceof Player)) return help;
+		Player p = (Player)s;
+		
+		//not in clan
+		if(!data.isInClan(p)) {
+			if(s.hasPermission("smartclans.create")) help.add(messages.getPrefix() + "§8/clans create <clanname>");
+			return help;
+		}
+		
+		//in clan
+		
+			//clanleader
+			if(data.isLeader(p)) {
+			if(s.hasPermission("smartclans.delete")) help.add(messages.getPrefix() + "§8/clans delete <clanname>");
+				help.add(messages.getPrefix() + "§8/clans add coleader <playername>");
+				help.add(messages.getPrefix() + "§8/clean set description <description>");
+			}
+			//TODO clancoleader
+		
+		//permissions
+		if(s.hasPermission("smartclans.reload")) help.add(messages.getPrefix() + "§8/clans reload");
+		return help;
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender s, Command cmd, String label, String[] args) {
 		List<String> completions = new ArrayList<String>();
 		//console + player
+		switch (args.length) {
+		case 1:
+			completions.add("help");
+			break;
+
+		default:
+			break;
+		}
 		
-		
+		//player
 		if(!(s instanceof Player)) {
 			switch (args.length) {
 			default:
@@ -150,10 +205,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			}
 			return completions;
 		}
-		//player
 		Player p = (Player)s;
-		
-		//everytime
 		
 		//in Clan
 		if(data.isInClan(p)) {

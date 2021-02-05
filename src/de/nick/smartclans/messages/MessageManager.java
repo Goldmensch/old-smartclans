@@ -1,7 +1,6 @@
 package de.nick.smartclans.messages;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -82,16 +81,12 @@ public class MessageManager {
 			saveDefaults();
 			return;
 		}
+			try {
+				config.load(file);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 		
-		try {
-			config.load(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
 	}
 	
 }
