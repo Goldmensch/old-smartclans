@@ -158,6 +158,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		//console + player
 		help.add(messages.getPrefix() + "§8/clans help");
 		help.add(messages.getPrefix() + "§8/clans info (clan)");
+		if(s.hasPermission("smartclans.reload")) help.add(messages.getPrefix() + "§8/clans reload");
 		
 		//player
 		if(!(s instanceof Player)) return help;
@@ -173,15 +174,12 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		
 			//clanleader
 			if(data.isLeader(p)) {
-			if(s.hasPermission("smartclans.delete")) help.add(messages.getPrefix() + "§8/clans delete <clanname>");
-				help.add(messages.getPrefix() + "§8/clans add coleader <playername>");
-				help.add(messages.getPrefix() + "§8/clean set description <description>");
+				if(s.hasPermission("smartclans.delete")) help.add(messages.getPrefix() + "§8/clans delete <clanname>");
+					help.add(messages.getPrefix() + "§8/clans add coleader <playername>");
+					help.add(messages.getPrefix() + "§8/clean set description <description>");
 			}
 			//TODO clancoleader
-		
-		//permissions
-		if(s.hasPermission("smartclans.reload")) help.add(messages.getPrefix() + "§8/clans reload");
-		return help;
+			return help;
 	}
 
 	@Override
@@ -191,6 +189,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		switch (args.length) {
 		case 1:
 			completions.add("help");
+			if(s.hasPermission("smartclans.reload")) completions.add("reload");
 			break;
 
 		default:
