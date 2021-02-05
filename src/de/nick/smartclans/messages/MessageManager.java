@@ -1,9 +1,11 @@
 package de.nick.smartclans.messages;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.nick.smartclans.main.Main;
@@ -36,6 +38,7 @@ public class MessageManager {
 		defaults.put("player-already-coleader-or-leader", "§cThe player %player% is already a leader or co leader.");
 		defaults.put("confirmname-not-match", "§cConfirmation failed! Clanname does not match.");
 		defaults.put("clan-deleted", "§aThe clan %clan% has been deleted.");
+		defaults.put("plugin-reloaded", "§aPlugin successfully reloaded.");
 	}
 	
 	public void saveDefaults() {
@@ -72,6 +75,23 @@ public class MessageManager {
 	
 	public String getRaw(String path) {
 		return config.getString(path);
+	}
+	
+	public void load() {
+		if(!file.exists()) {
+			saveDefaults();
+			return;
+		}
+		
+		try {
+			config.load(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -23,23 +23,21 @@ public class DataManager {
 	private HashMap<String, YamlConfiguration> clansconfigs;
 	private HashMap<String, File> clansfiles;
 	
-	public DataManager() {
-		playerfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data", "playerdata.yml");
-		playerconfig = YamlConfiguration.loadConfiguration(playerfile);
-	}
-	
 	public void loadClans() {
+		clansconfigs = new HashMap<String, YamlConfiguration>();
+		clansfiles = new HashMap<String, File>();
 		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() + "] start loading the clan configs...");
 		File dir = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans");
 		File[] files = dir.listFiles();
-		if(files == null) return;
-		clansconfigs = new HashMap<String, YamlConfiguration>();
-		clansfiles = new HashMap<String, File>();
+		if(files == null) {
+			Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() +  "] 0 §rclans loaded.");
+			return;
+		}
 		for(int i = 0; i < files.length; i++) {
 			clansconfigs.put(files[i].getName(), YamlConfiguration.loadConfiguration(files[i]));
 			clansfiles.put(files[i].getName(), files[i]);
 		}
-		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() +  "]  " + files.length + " §rclans loaded.");
+		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() +  "] " + files.length + " §rclans loaded.");
 	}
 	
 	public boolean createClan(String clanname, Player leader) {	
@@ -133,5 +131,10 @@ public class DataManager {
 		clansconfigs.remove(clan + ".yml");
 		clansfiles.remove(clan + ".yml");
 		clanfile.delete();
+	}
+	
+	public void loadPlayer() {
+		playerfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data", "playerdata.yml");
+		playerconfig = YamlConfiguration.loadConfiguration(playerfile);
 	}
 }

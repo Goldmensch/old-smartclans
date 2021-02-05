@@ -22,6 +22,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		messages = new MessageManager();
 		data = new DataManager();
 		data.loadClans();
+		data.loadPlayer();
 	}
 	
 	@Override
@@ -30,8 +31,17 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			//TODO wrong arguments
 			return false;
 		}
-		/*-----ConsoleSection----*/
-		
+		/*-----ConsoleAndPlayerSection----*/
+		if(args[0].equalsIgnoreCase("reload") && (args.length == 1)) {
+			if(s.hasPermission("smartclans.reload")) {
+				data.loadClans();
+				messages.load();
+				data.loadPlayer();
+				s.sendMessage(messages.get("plugin-reloaded"));
+			}else
+				s.sendMessage(messages.get("no-permission"));
+			return false;
+		}
 		/*----PlayerSection-----*/
 		if(!(s instanceof Player)) {
 			s.sendMessage(messages.get("command-exe-no-player"));
