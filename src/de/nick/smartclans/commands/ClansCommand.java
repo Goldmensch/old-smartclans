@@ -199,10 +199,6 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	}
 	
 	public List<String> getHelp(CommandSender s) {
-		Player p = null;
-		if(s instanceof Player) {
-			p = (Player)s;
-		}
 		List<String> help = new ArrayList<String>();
 		help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 		
@@ -216,6 +212,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		
 		//player
 		if(!(s instanceof Player)) return help;
+		Player p = (Player)s;
 		
 		if(s.hasPermission("smartclans.info.others")) {
 			help.add(messages.getPrefix() + "§8/clans info (clananname)");
