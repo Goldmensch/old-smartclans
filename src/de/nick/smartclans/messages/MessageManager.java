@@ -38,6 +38,7 @@ public class MessageManager {
 		defaults.put("confirmname-not-match", "§cConfirmation failed! Clanname does not match.");
 		defaults.put("clan-deleted", "§aThe clan %clan% has been deleted.");
 		defaults.put("plugin-reloaded", "§aPlugin successfully reloaded.");
+		defaults.put("clan-not-exist", "§cThis Clan doesn't exist.");
 	}
 	
 	public void saveDefaults() {

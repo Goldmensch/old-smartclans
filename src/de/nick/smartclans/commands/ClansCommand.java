@@ -2,6 +2,7 @@ package de.nick.smartclans.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -43,11 +44,24 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				s.sendMessage(messages.get("no-permission"));
 			return false;
 		}
-		//info
+		//help
 		if(args[0].equalsIgnoreCase("help")) {
 			for(String msg : getHelp(s)) {
 				s.sendMessage(msg);
 			}
+			return false;
+		}
+		//info
+		if(args[0].equalsIgnoreCase("info") && (args.length == 2)) {
+			if(s.hasPermission("smartclans.info.others")) {
+				if(data.existClan(args[1])) {
+					for(String msg : getClanInfo(args[1])) {
+						s.sendMessage(msg);
+					}
+				}else
+					s.sendMessage(messages.get("clan-not-exist"));
+			}else
+				s.sendMessage(messages.get("no-permission"));
 			return false;
 		}
 		/*----PlayerSection-----*/
@@ -83,12 +97,23 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			}
 			return false;
 		}
+		    /*---members---*/
+			if(args[0].equalsIgnoreCase("info") && (args.length == 1)) {
+				if(s.hasPermission("smartclans.info")) {
+					for(String msg : getClanInfo(data.getClan(p))) {
+						p.sendMessage(msg);
+					}
+				}else
+					p.sendMessage(messages.get("no-permission"));
+				return false;
+			}
+		
 			/*---ClanLeader---*/
 			if(data.isLeader(p)) {
 				
 				//set clan description
 				if(args[0].equalsIgnoreCase("set") && (args.length >= 2)) {
-					if(args[1].equalsIgnoreCase("description") && (args.length > 3))  {
+					if(args[1].equalsIgnoreCase("description") && (args.length > 2))  {
 						StringBuilder text = new StringBuilder(256);
 						for(int i = 0; i < args.length; i++) {
 							if(i < 2) continue;
@@ -151,18 +176,52 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		return false;
 	}
 	
+	public List<String> getClanInfo(String clan) {
+		List<String> info = new ArrayList<String>();
+		List<String> membernames = new ArrayList<String>();
+		List<String> coleadernames = new ArrayList<String>();
+		
+		for(String uuid : data.getCoLeaders(clan)) {
+			coleadernames.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
+		}
+		
+		for(String uuid : data.getMember(clan)) {
+			membernames.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
+		}
+		
+		info.add(messages.getPrefix() + "§6----------------ClansInfo---------------");
+		info.add(messages.getPrefix() + "§8name: §7" + clan);
+		info.add(messages.getPrefix() + "§8description: §7" + data.getClanData(clan, "description"));
+		info.add(messages.getPrefix() + "§8leader: §7" + Bukkit.getOfflinePlayer(UUID.fromString(data.getClanData(clan, "leader").toString())).getName());
+		info.add(messages.getPrefix() + "§8coleader: §7" + coleadernames);
+		info.add(messages.getPrefix() + "§8members: §7" + membernames);
+		return info;
+	}
+	
 	public List<String> getHelp(CommandSender s) {
+		Player p = null;
+		if(s instanceof Player) {
+			p = (Player)s;
+		}
 		List<String> help = new ArrayList<String>();
 		help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 		
 		//console + player
 		help.add(messages.getPrefix() + "§8/clans help");
-		help.add(messages.getPrefix() + "§8/clans info (clan)");
 		if(s.hasPermission("smartclans.reload")) help.add(messages.getPrefix() + "§8/clans reload");
+		//console
+		if(!(s instanceof Player)) {
+			if(s.hasPermission("smartclans.info.others")) help.add(messages.getPrefix() + "§8/clans info <clanname>");
+		}
 		
 		//player
 		if(!(s instanceof Player)) return help;
-		Player p = (Player)s;
+		
+		if(s.hasPermission("smartclans.info.others")) {
+			help.add(messages.getPrefix() + "§8/clans info (clananname)");
+		}else if(s.hasPermission("smartclans.info") && data.isInClan(p)) {
+			help.add(messages.getPrefix() + "§8/clans info");
+		}
 		
 		//not in clan
 		if(!data.isInClan(p)) {
@@ -188,8 +247,9 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		//console + player
 		switch (args.length) {
 		case 1:
-			completions.add("help");
+			if("help".startsWith(args[0])) completions.add("help");
 			if(s.hasPermission("smartclans.reload")) completions.add("reload");
+			if(s.hasPermission("smartclans.info") && "info".startsWith(args[0])) completions.add("info");
 			break;
 
 		default:

@@ -82,6 +82,9 @@ public class DataManager {
 	}
 	
 	public boolean isInClan(Player p) {
+		if(p == null) {
+			return false;
+		}
 		if(playerconfig.contains(p.getUniqueId().toString() + ".clan")) {
 			return true;
 		}else
@@ -136,5 +139,17 @@ public class DataManager {
 	public void loadPlayer() {
 		playerfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data", "playerdata.yml");
 		playerconfig = YamlConfiguration.loadConfiguration(playerfile);
+	}
+	
+	public List<String> getMember(String clan) {
+		clanconfig = clansconfigs.get(clan + ".yml");
+		return clanconfig.getStringList("members");
+	}
+	
+	public boolean existClan(String clan) {
+		if(clansconfigs.containsKey(clan + ".yml")) {
+			return true;
+		}else
+			return false;
 	}
 }
