@@ -1,0 +1,6 @@
+# don't change!
+version: 1
+
+#----------Invites----------#
+# Time in minutes until an invite expires. Can take longer depending on the server TPS!
+invite-expires-after: 3

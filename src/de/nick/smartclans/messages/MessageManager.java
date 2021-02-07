@@ -27,8 +27,8 @@ public class MessageManager {
 		defaults.put("no-permission", "§cYou don't have permissions to do this.");
 		defaults.put("clan-created", "§aThe clan %clan% was created by %creator%.");
 		defaults.put("clan-already-exist", "§cThe clan %clan% already exists.");
-		defaults.put("player-already-in-Clan", "§cYou are already in a clan.");
-		defaults.put("player-not-in-Clan", "§cYou are not in a Clan.");
+		defaults.put("you-already-in-Clan", "§cYou are already in a clan.");
+		defaults.put("you-not-in-Clan", "§cYou are not in a Clan.");
 		defaults.put("clan-description-was-set", "§aThe clan description was set.");
 		defaults.put("co-leader-added", "§aThe co-leader %coleader% has been added to %clan%.");
 		defaults.put("player-not-online", "§cThe player %player% isn't online.");
@@ -39,9 +39,22 @@ public class MessageManager {
 		defaults.put("clan-deleted", "§aThe clan %clan% has been deleted.");
 		defaults.put("plugin-reloaded", "§aPlugin successfully reloaded.");
 		defaults.put("clan-not-exist", "§cThis Clan doesn't exist.");
+		defaults.put("player-already-in-clan", "§cThe player %player% is already in a clan.");
+		defaults.put("you-invited-to", "§bYou have been invited to the clan %clan%.");
+		defaults.put("you-invited-other", "§aYou have invited %player% to the clan.");
+		defaults.put("no-invitation", "§cYou don't have an invitation.");
+		defaults.put("you-joined", "§aYou joined the clan %clan%.");
+		defaults.put("player-joined", "The player %player% has joined the clan.");
+		defaults.put("decline-invite", "§cYou have declined the invitation to join clan %clan%.");
+		defaults.put("you-left", "§aYou left the %clan% clan.");
+		defaults.put("player-left", "§cThe player %player% has left the clan");
+		defaults.put("player-already-invited", "§cThe player %player% is already invited to the clan %clan%.");
+		defaults.put("invite-expired", "§cThe clan invitation to %clan% has just expired.");
+		defaults.put("you-cant-leave", "§cYou can't leave the clan!");
 	}
 	
 	public void saveDefaults() {
+		config.set("version", 1);
 		addDefaults();
 		for(String path : defaults.keySet()) {
 			config.set(path, defaults.get(path));
@@ -82,11 +95,11 @@ public class MessageManager {
 			saveDefaults();
 			return;
 		}
-			try {
-				config.load(file);
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
-			}
+		try {
+			config.load(file);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	

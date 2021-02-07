@@ -66,11 +66,11 @@ public class DataManager {
 	}
 	
 	public void savePlayerData() {
-		try {
-			playerconfig.save(playerfile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			try {
+				playerconfig.save(playerfile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 
 	public void saveClanFile(File file) {
@@ -141,7 +141,7 @@ public class DataManager {
 		playerconfig = YamlConfiguration.loadConfiguration(playerfile);
 	}
 	
-	public List<String> getMember(String clan) {
+	public List<String> getMembers(String clan) {
 		clanconfig = clansconfigs.get(clan + ".yml");
 		return clanconfig.getStringList("members");
 	}
@@ -151,5 +151,29 @@ public class DataManager {
 			return true;
 		}else
 			return false;
+	}
+	
+	public boolean isCoLeader(Player p) {
+		if(getPosition(p).equalsIgnoreCase("coleader") || getPosition(p).equalsIgnoreCase("leader")) {
+			return true;
+		}else
+			return false;
+	}
+	
+	public void addMember(String clan, Player member) {
+		List<String> members = getMembers(clan);
+		members.add(member.getUniqueId().toString());
+		setClanData(clan, "members", members);
+		setPlayerData(member, "clan", clan);
+		setPlayerData(member, "position", "member");
+		
+	}
+	
+	public void removeMember(String clan, Player member) {
+		List<String> members = getMembers(clan);
+		members.remove(member.getUniqueId().toString());
+		setClanData(clan, "members", members);
+		setPlayerData(member, "clan", null);
+		setPlayerData(member, "position", null);
 	}
 }

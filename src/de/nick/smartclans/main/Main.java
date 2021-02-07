@@ -1,5 +1,7 @@
 package de.nick.smartclans.main;
 
+import java.io.File;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.nick.smartclans.commands.*;
@@ -18,12 +20,14 @@ public class Main extends JavaPlugin{
 		messages = new MessageManager();
 		
 		/*-----files-----*/
-/*dev>>		if(!messages.getFile().exists()) {
- * 			messages = new MessageManager();
+		if(!new File(getDataFolder(), "config.yml").exists()) {
+			saveDefaultConfig();
+		}
+		if(!messages.getFile().exists()) {
+ 		messages = new MessageManager();
 			messages.saveDefaults();
-		} */
+		}
 		messages.saveDefaults();
-		
 		//commnds
 		ClansCommand clanscommand = new ClansCommand();
 		getCommand("clans").setExecutor(clanscommand);
