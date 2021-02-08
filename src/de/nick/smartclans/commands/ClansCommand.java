@@ -92,6 +92,10 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						p.sendMessage(messages.get("you-already-in-Clan"));
 						return false;
 					}
+					if(args[1].trim().length() > config.getInt("max-clanname-lenght")) {
+						p.sendMessage(messages.get("clanname-to-long").replace("%lenght%", String.valueOf(config.getInt("max-clanname-lenght"))));
+						return false;
+					}
 					if(data.createClan(args[1].trim(), p)) {
 						p.sendMessage(messages.getPrefix() + messages.getRaw("clan-created").replace("%clan%", args[1]).replace("%creator%", p.getName()));
 					}else

@@ -10,7 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.main.Main;
+import de.nick.smartclans.teams.TeamManager;
 
 public class DataManager {
 
@@ -20,10 +22,15 @@ public class DataManager {
 	private File playerfile;
 	private YamlConfiguration playerconfig;
 	
+	private ConfigManager config;
+	private TeamManager teams;
+	
 	private HashMap<String, YamlConfiguration> clansconfigs;
 	private HashMap<String, File> clansfiles;
 	
 	public void loadClans() {
+		config = new ConfigManager();
+		teams = new TeamManager();
 		clansconfigs = new HashMap<String, YamlConfiguration>();
 		clansfiles = new HashMap<String, File>();
 		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() + "] start loading the clan configs...");
@@ -57,6 +64,11 @@ public class DataManager {
 		clansfiles.put(clanfile.getName(), clanfile);
 		setPlayerData(leader, "clan", clanname);
 		setPlayerData(leader, "position", "leader");
+		if(config.teamsEnable()) {
+			teams.addTeam(clanname);
+			teams.addToTeam(leader);
+			teams.addPlaceholder(clanname);
+		}
 		return true;
 	}
 	
@@ -124,6 +136,7 @@ public class DataManager {
 	}
 	
 	public void deleteClan(String clan) {
+		teams.removeTeam(clan);
 		clanconfig = clansconfigs.get(clan + ".yml");
 		clanfile = clansfiles.get(clan + ".yml");
 		for(String uuid : clanconfig.getStringList("members")) {
@@ -161,6 +174,9 @@ public class DataManager {
 	}
 	
 	public void addMember(String clan, Player member) {
+		if(config.teamsEnable()) {
+			teams.addToTeam(member);
+		}
 		List<String> members = getMembers(clan);
 		members.add(member.getUniqueId().toString());
 		setClanData(clan, "members", members);
@@ -170,6 +186,10 @@ public class DataManager {
 	}
 	
 	public void removeMember(String clan, Player member) {
+		if(config.teamsEnable()) {
+			teams.removeFromTeam(member);
+		}
+		teams.removeFromTeam(member);
 		List<String> members = getMembers(clan);
 		members.remove(member.getUniqueId().toString());
 		setClanData(clan, "members", members);

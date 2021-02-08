@@ -4,3 +4,9 @@ version: 1
 #----------Invites----------#
 # Time in minutes until an invite expires. Can take longer depending on the server TPS!
 invite-expires-after: 3
+
+#----------General----------#
+# Specifies whether the Minecraft teams should be used.(recommended) Changing this value while clans are already created can cause errors!
+use-minecraft-teams: true
+# Limits the clan name length. It is recommended not to set the length higher than 12, from 16 errors can occur!
+max-clanname-lenght: 8

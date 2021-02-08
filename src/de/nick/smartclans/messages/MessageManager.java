@@ -51,6 +51,7 @@ public class MessageManager {
 		defaults.put("player-already-invited", "§cThe player %player% is already invited to the clan %clan%.");
 		defaults.put("invite-expired", "§cThe clan invitation to %clan% has just expired.");
 		defaults.put("you-cant-leave", "§cYou can't leave the clan!");
+		defaults.put("clanname-to-long", "§cThe clanname must not be longer than %lenght%.");
 	}
 	
 	public void saveDefaults() {

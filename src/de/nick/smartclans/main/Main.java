@@ -2,9 +2,13 @@ package de.nick.smartclans.main;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.nick.smartclans.commands.*;
+import de.nick.smartclans.listener.PlayerJoinListener;
+import de.nick.smartclans.listener.PlayerLeaveListener;
 import de.nick.smartclans.messages.MessageManager;
 
 public class Main extends JavaPlugin{
@@ -32,6 +36,11 @@ public class Main extends JavaPlugin{
 		ClansCommand clanscommand = new ClansCommand();
 		getCommand("clans").setExecutor(clanscommand);
 		getCommand("clans").setTabCompleter(clanscommand);
+		
+		//events
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvents(new PlayerJoinListener(), plugin);
+		pm.registerEvents(new PlayerLeaveListener(), plugin);
 		
 		
 	}

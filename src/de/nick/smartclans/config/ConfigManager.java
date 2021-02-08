@@ -22,4 +22,8 @@ public class ConfigManager {
 		return main.getConfig().getInt(path);
 	}
 	
+	public boolean teamsEnable() {
+		return main.getConfig().getBoolean("use-minecraft-teams");
+	}
+	
 }
