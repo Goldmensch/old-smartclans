@@ -198,7 +198,6 @@ public class DataManager {
 		if(config.teamsEnable()) {
 			teams.removeFromTeam(member);
 		}
-		teams.removeFromTeam(member);
 		List<String> members = getMembers(clan);
 		members.remove(member.getUniqueId().toString());
 		setClanData(clan, "members", members);
@@ -220,5 +219,11 @@ public class DataManager {
 	public List<String> getBanned(String clan) {
 		clanconfig = clansconfigs.get(clan + ".yml");
 		return clanconfig.getStringList("banned");
+	}
+	
+	public void removeBan(String clan, Player p) {
+		List<String> banned = getBanned(clan);
+		banned.remove(p.getUniqueId().toString());
+		setClanData(clan, "banned", banned);
 	}
 }

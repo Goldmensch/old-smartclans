@@ -329,7 +329,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(args[0].equalsIgnoreCase("kick") && (args.length == 2)) {
 					Player target = Bukkit.getPlayer(args[1]);
 					if(target == null) {
-						p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
+						p.sendMessage(messages.get("player-not-online").replace("%player%", args[1]));
 						return false;
 					}
 					if(data.isInClan(target)) {
@@ -373,6 +373,22 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					data.addBan(data.getClan(target), target);
 					data.removeMember(data.getClan(p), target);
 					p.sendMessage(messages.get("player-banned").replace("%player%", target.getName()));
+					return false;
+				}
+				
+				//unban members
+				if(args[0].equalsIgnoreCase("unban") && (args.length == 2)) {
+					Player target = Bukkit.getPlayer(args[1]);
+					if(target == null) {
+						p.sendMessage(messages.get("player-not-online").replace("%player%", args[1]));
+						return false;
+					}
+					if(!data.getBanned(data.getClan(p)).contains(target.getUniqueId().toString())) {
+						p.sendMessage(messages.get("player-not-banned").replace("%player%", target.getName()));
+						return false;
+					}
+					data.removeBan(data.getClan(p), target);
+					p.sendMessage(messages.get("player-unbanned").replace("%player%", target.getName()));
 					return false;
 				}
 			}

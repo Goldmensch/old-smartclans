@@ -70,6 +70,8 @@ public class MessageManager {
 		defaults.put("player-kicked", "§aThe player %player% was kicked out of the clan.");
 		defaults.put("player-banned", "§aThe player %player% has been banned from the clan.");
 		defaults.put("youre-banned", "§cYou are banned from the clan %clan%.");
+		defaults.put("player-not-banned", "§cThe player %player% isn't banned.");
+		defaults.put("player-unbanned", "§aThe player %player% has been unbanned.");
 	}
 	
 	public void saveDefaults() {
