@@ -319,6 +319,32 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						return false;
 					}
 				}
+				//kick members
+				if(args[0].equalsIgnoreCase("kick") && (args.length == 2)) {
+					Player target = Bukkit.getPlayer(args[1]);
+					if(target == null) {
+						p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
+						return false;
+					}
+					if(data.isInClan(target)) {
+						if(!data.getClan(target).equalsIgnoreCase(data.getClan(p))) {
+							p.sendMessage(messages.get("player-not-in-same-clan").replace("%player%", target.getName()));
+							return false;
+						}
+					}else {
+						p.sendMessage(messages.get("player-not-in-clan").replace("%player%", target.getName()));
+						return false;
+					}
+					if(data.isCoLeader(p)) {
+						p.sendMessage(messages.get("you-cannot-kick-player").replace("%player%", target.getName()));
+						return false;
+					}
+					data.removeMember(data.getClan(p), target);
+					data.setPlayerData(p, "clan", null);
+					data.setPlayerData(p, "position", null);
+					p.sendMessage(messages.get("player-kicked").replace("%player%", target.getName()));
+					return false;
+				}
 			}
 			
 		for(String msg : getHelp(s)) {
