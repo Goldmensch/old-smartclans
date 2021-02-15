@@ -432,6 +432,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			if(data.isCoLeader(p)) {
 				help.add(messages.getPrefix() + "§8/clans invite <playername>");
 				help.add(messages.getPrefix() + "§8/clans toggle friendlyfire");
+				help.add(messages.getPrefix() + "§8/clans kick <playername>");
 			}
 			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
@@ -474,6 +475,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if("leave".startsWith(args[0]) && p.hasPermission("smartclans.leave")) completions.add("leave");
 				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
 				if(data.isCoLeader(p) && "toogle".startsWith(args[0])) completions.add("toggle");
+				if(data.isCoLeader(p) && "kick".startsWith(args[0])) completions.add("kick");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
@@ -486,6 +488,12 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				}
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
 				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("toggle") && "friendlyfire".startsWith(args[1])) completions.add("friendlyfire");
+				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("kick")) {
+					for(Player target : Bukkit.getOnlinePlayers()) {
+						if(!target.getName().startsWith(args[1])) continue;
+						completions.add(target.getName());
+					}
+				}
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
