@@ -120,6 +120,12 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			//accept invite
 			if(args[0].equalsIgnoreCase("accept") && (args.length == 1)) {
 				if(invites.containsKey(p.getName())) {
+					
+					if(data.getBanned(invites.get(p.getName())).contains(p.getUniqueId().toString())) {
+						p.sendMessage(messages.get("youre-banned").replace("%clan%", invites.get(p.getName())));
+						return false;
+					}
+					
 					data.addMember(invites.get(p.getName()), p);
 					invites.remove(p.getName());
 					p.sendMessage(messages.get("you-joined").replace("%clan%", data.getClan(p)));
@@ -340,9 +346,33 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						return false;
 					}
 					data.removeMember(data.getClan(p), target);
-					data.setPlayerData(p, "clan", null);
-					data.setPlayerData(p, "position", null);
 					p.sendMessage(messages.get("player-kicked").replace("%player%", target.getName()));
+					return false;
+				}
+				
+				//ban members
+				if(args[0].equalsIgnoreCase("ban") && (args.length == 2)) {
+					Player target = Bukkit.getPlayer(args[1]);
+					if(target == null) {
+						p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
+						return false;
+					}
+					if(data.isInClan(target)) {
+						if(!data.getClan(target).equalsIgnoreCase(data.getClan(p))) {
+							p.sendMessage(messages.get("player-not-in-same-clan").replace("%player%", target.getName()));
+							return false;
+						}
+					}else {
+						p.sendMessage(messages.get("player-not-in-clan").replace("%player%", target.getName()));
+						return false;
+					}
+					if(data.isCoLeader(p)) {
+						p.sendMessage(messages.get("you-cannot-ban-player").replace("%player%", target.getName()));
+						return false;
+					}
+					data.addBan(data.getClan(target), target);
+					data.removeMember(data.getClan(p), target);
+					p.sendMessage(messages.get("player-banned").replace("%player%", target.getName()));
 					return false;
 				}
 			}
@@ -433,6 +463,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				help.add(messages.getPrefix() + "§8/clans invite <playername>");
 				help.add(messages.getPrefix() + "§8/clans toggle friendlyfire");
 				help.add(messages.getPrefix() + "§8/clans kick <playername>");
+				help.add(messages.getPrefix() + "§8/clans ban <playername>");
 			}
 			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
@@ -476,6 +507,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
 				if(data.isCoLeader(p) && "toogle".startsWith(args[0])) completions.add("toggle");
 				if(data.isCoLeader(p) && "kick".startsWith(args[0])) completions.add("kick");
+				if(data.isCoLeader(p) && "ban".startsWith(args[0])) completions.add("ban");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
@@ -488,7 +520,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				}
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
 				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("toggle") && "friendlyfire".startsWith(args[1])) completions.add("friendlyfire");
-				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("kick")) {
+				if(data.isCoLeader(p) && (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("ban"))) {
 					for(Player target : Bukkit.getOnlinePlayers()) {
 						if(!target.getName().startsWith(args[1])) continue;
 						completions.add(target.getName());

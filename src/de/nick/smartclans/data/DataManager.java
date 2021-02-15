@@ -210,4 +210,15 @@ public class DataManager {
 		return teams;
 		
 	}
+	
+	public void addBan(String clan, Player p) {
+		List<String> banned = getBanned(clan);
+		banned.add(p.getUniqueId().toString());
+		setClanData(clan, "banned", banned);
+	}
+	
+	public List<String> getBanned(String clan) {
+		clanconfig = clansconfigs.get(clan + ".yml");
+		return clanconfig.getStringList("banned");
+	}
 }

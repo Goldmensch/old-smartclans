@@ -66,7 +66,10 @@ public class MessageManager {
 		defaults.put("friendlyfire-enable", "§cFriendlyFire is now enabled.");
 		defaults.put("friendlyfire-disable", "§aFriendlyFire is now disable.");
 		defaults.put("you-cannot-kick-player", "§cYou can not kick the player %player%.");
+		defaults.put("you-cannot-ban-player", "§cYou can not ban the player %player%.");
 		defaults.put("player-kicked", "§aThe player %player% was kicked out of the clan.");
+		defaults.put("player-banned", "§aThe player %player% has been banned from the clan.");
+		defaults.put("youre-banned", "§cYou are banned from the clan %clan%.");
 	}
 	
 	public void saveDefaults() {
