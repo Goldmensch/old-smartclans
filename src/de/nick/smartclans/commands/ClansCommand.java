@@ -8,6 +8,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package de.nick.smartclans.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,10 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				data.loadClans();
 				messages.load();
 				data.loadPlayer();
-				config.reload();
+				if(!new File(Main.getPlugin().getDataFolder(), "config.yml").exists()) {
+					Main.getPlugin().saveDefaultConfig();
+				}else
+					config.reload();
 				s.sendMessage(messages.get("plugin-reloaded"));
 			}else
 				s.sendMessage(messages.get("no-permission"));
@@ -229,12 +233,41 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						}
 						coleaders.add(target.getUniqueId().toString());
 						data.setClanData(data.getClan(p), "co-leaders", coleaders);
-						data.setPlayerData(p, "position", "coleader");
+						data.setPlayerData(target, "position", "coleader");
 						target.sendMessage(messages.get("you-are-now-coleader-of").replace("%clan%", data.getClan(p)));
 						p.sendMessage(messages.get("co-leader-added").replace("%clan%", data.getClan(p)).replace("%coleader%", target.getName()));
 						return false;
 					}
-						
+				}
+					
+				//remove coleader
+				if(args[0].equalsIgnoreCase("remove") && (args.length >= 2)) {
+					if(args[1].equalsIgnoreCase("coleader") && (args.length == 3)) {
+						Player target = Bukkit.getPlayer(args[2]);
+						if(target == null) {
+							p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
+							return false;
+						}
+						if(data.isInClan(target)) {
+							if(!data.getClan(target).equalsIgnoreCase(data.getClan(p))) {
+								p.sendMessage(messages.get("player-not-in-same-clan").replace("%player%", target.getName()));
+								return false;
+							}
+						}else {
+							p.sendMessage(messages.get("player-not-in-clan").replace("%player%", target.getName()));
+							return false;
+						}
+						if(!data.getPosition(p).equalsIgnoreCase("coleader")) {
+							p.sendMessage(messages.get("player-not-coleader").replace("%player%", target.getName()));
+							return false;
+						}
+						List<String> coleaders = data.getCoLeaders(data.getClan(p));
+						coleaders.remove(target.getUniqueId().toString());
+						data.setClanData(data.getClan(p), "co-leaders", coleaders);
+						data.setPlayerData(target, "position", "member");
+						p.sendMessage(messages.get("coleader-removed").replace("%player%", target.getName()));
+						return false;
+					}
 				}
 				
 			}

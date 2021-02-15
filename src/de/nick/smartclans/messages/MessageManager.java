@@ -60,6 +60,9 @@ public class MessageManager {
 		defaults.put("invite-expired", "§cThe clan invitation to %clan% has just expired.");
 		defaults.put("you-cant-leave", "§cYou can't leave the clan!");
 		defaults.put("clanname-to-long", "§cThe clanname must not be longer than %lenght%.");
+		defaults.put("player-not-coleader", "§cThe player %player% isn't a coleader.");
+		defaults.put("coleader-removed", "§aThe player %player% is now no longer a co leader.");
+		defaults.put("player-not-in-clan", "§cThe player %player% isn't in a clan.");
 	}
 	
 	public void saveDefaults() {
