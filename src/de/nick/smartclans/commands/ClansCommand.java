@@ -347,7 +347,10 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		}
 		
 		/*player*/
-		if(!(s instanceof Player)) return help;
+		if(!(s instanceof Player)) {
+			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
+			return help;
+		}
 		Player p = (Player)s;
 		
 		if(s.hasPermission("smartclans.info.others")) {
@@ -361,6 +364,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			if(s.hasPermission("smartclans.create")) help.add(messages.getPrefix() + "§8/clans create <clanname>");
 			help.add(messages.getPrefix() + "§8/clans decline");
 			help.add(messages.getPrefix() + "§8/clans accept");
+			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
 		}
 		
@@ -370,12 +374,14 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			if(data.isLeader(p)) {
 				if(s.hasPermission("smartclans.delete")) help.add(messages.getPrefix() + "§8/clans delete <clanname>");
 				help.add(messages.getPrefix() + "§8/clans add coleader <playername>");
-				help.add(messages.getPrefix() + "§8/clean set description <description>");
+				help.add(messages.getPrefix() + "§8/clans set description <description>");
+				help.add(messages.getPrefix() + "§8/clans remove coleader <playername>");
 			}
 			/*clancoleader*/
 			if(data.isCoLeader(p)) {
 				help.add(messages.getPrefix() + "§8/clans invite <playername>");
 			}
+			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
 	}
 
@@ -413,6 +419,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(data.isLeader(p) && "delete".startsWith(args[0])) completions.add("delete");
 				if(data.isCoLeader(p) && "invite".startsWith(args[0])) completions.add("invite");
 				if("leave".startsWith(args[0]) && p.hasPermission("smartclans.leave")) completions.add("leave");
+				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
@@ -423,6 +430,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						completions.add(target.getName());
 					}
 				}
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
