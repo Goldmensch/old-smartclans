@@ -304,6 +304,21 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					p.sendMessage(messages.get("you-invited-other").replace("%player%", target.getName()));
 					return false;
 				}
+				//togglefriendlyfire
+				if(args[0].equalsIgnoreCase("toggle") && (args.length >= 2)) {
+					if(args[1].equalsIgnoreCase("friendlyfire") && (args.length == 2)) {
+						if(Boolean.valueOf(data.getClanData(data.getClan(p), "friendlyfire").toString()) == true) {
+							data.setClanData(data.getClan(p), "friendlyfire", false);
+							data.getTeamManager().setFriendlyFire(data.getClan(p), false);
+							p.sendMessage(messages.get("friendlyfire-disable"));
+						}else {
+							data.setClanData(data.getClan(p), "friendlyfire", true);
+							data.getTeamManager().setFriendlyFire(data.getClan(p), true);
+							p.sendMessage(messages.get("friendlyfire-enable"));
+						}
+						return false;
+					}
+				}
 			}
 			
 		for(String msg : getHelp(s)) {
@@ -316,6 +331,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		List<String> info = new ArrayList<String>();
 		List<String> membernames = new ArrayList<String>();
 		List<String> coleadernames = new ArrayList<String>();
+		String friendlyfire;
 		
 		for(String uuid : data.getCoLeaders(clan)) {
 			coleadernames.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
@@ -325,10 +341,19 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			membernames.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
 		}
 		
+		if(Boolean.valueOf(data.getClanData(clan, "friendlyfire").toString()) == true) {
+			friendlyfire = "§cenable";
+		}else {
+			friendlyfire = "§adisable";
+		}
+		
+		
+		
 		info.add(messages.getPrefix() + "§6----------------ClansInfo---------------");
 		info.add(messages.getPrefix() + "§8name: §7" + clan);
 		info.add(messages.getPrefix() + "§8description: §7" + data.getClanData(clan, "description"));
 		info.add(messages.getPrefix() + "§8leader: §7" + Bukkit.getOfflinePlayer(UUID.fromString(data.getClanData(clan, "leader").toString())).getName());
+		info.add(messages.getPrefix() + "§8friendlyfire: " + friendlyfire);
 		info.add(messages.getPrefix() + "§8coleader: §7" + coleadernames);
 		info.add(messages.getPrefix() + "§8members: §7" + membernames);
 		return info;
@@ -380,11 +405,13 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			/*clancoleader*/
 			if(data.isCoLeader(p)) {
 				help.add(messages.getPrefix() + "§8/clans invite <playername>");
+				help.add(messages.getPrefix() + "§8/clans toggle friendlyfire");
 			}
 			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
 	}
 
+	/*tabcomplete*/
 	@Override
 	public List<String> onTabComplete(CommandSender s, Command cmd, String label, String[] args) {
 		List<String> completions = new ArrayList<String>();
@@ -420,6 +447,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(data.isCoLeader(p) && "invite".startsWith(args[0])) completions.add("invite");
 				if("leave".startsWith(args[0]) && p.hasPermission("smartclans.leave")) completions.add("leave");
 				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
+				if(data.isCoLeader(p) && "toogle".startsWith(args[0])) completions.add("toggle");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
@@ -431,6 +459,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					}
 				}
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
+				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("toggle") && "friendlyfire".startsWith(args[1])) completions.add("friendlyfire");
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {

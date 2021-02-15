@@ -63,6 +63,7 @@ public class DataManager {
 		clanconfig.set("description", "!empty");
 		clanconfig.set("leader", leader.getUniqueId().toString());
 		clanconfig.set("co-leaders", new ArrayList<String>());
+		clanconfig.set("friendlyfire", true);
 		List<String> members = clanconfig.getStringList("members");
 		members.add(leader.getUniqueId().toString());
 		clanconfig.set("members", members);
@@ -203,5 +204,10 @@ public class DataManager {
 		setClanData(clan, "members", members);
 		setPlayerData(member, "clan", null);
 		setPlayerData(member, "position", null);
+	}
+	
+	public TeamManager getTeamManager() {
+		return teams;
+		
 	}
 }

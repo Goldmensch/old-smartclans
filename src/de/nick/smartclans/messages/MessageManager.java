@@ -63,6 +63,8 @@ public class MessageManager {
 		defaults.put("player-not-coleader", "§cThe player %player% isn't a coleader.");
 		defaults.put("coleader-removed", "§aThe player %player% is now no longer a co leader.");
 		defaults.put("player-not-in-clan", "§cThe player %player% isn't in a clan.");
+		defaults.put("friendlyfire-enable", "§cFriendlyFire is now enabled.");
+		defaults.put("friendlyfire-disable", "§aFriendlyFire is now disable.");
 	}
 	
 	public void saveDefaults() {

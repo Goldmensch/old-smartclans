@@ -48,4 +48,8 @@ public class TeamManager {
 		scoreboard.getTeam(name).addEntry("placeholder-smartclans-" + name);
 	}
 	
+	public void setFriendlyFire(String name, boolean value) {
+		scoreboard.getTeam(name).setAllowFriendlyFire(value);
+	}
+	
 }
