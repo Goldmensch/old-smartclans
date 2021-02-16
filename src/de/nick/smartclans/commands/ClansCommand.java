@@ -26,6 +26,7 @@ import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.data.DataManager;
 import de.nick.smartclans.main.Main;
 import de.nick.smartclans.messages.MessageManager;
+import de.nick.smartclans.plugins.luckperms.LuckpermsManager;
 
 public class ClansCommand implements CommandExecutor, TabCompleter{
 	
@@ -34,6 +35,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	private HashMap<String, String> invites;
 	private ConfigManager config;
 	private ArrayList<String> tpcooldown;
+	private LuckpermsManager luckperms;
 	
 	public ClansCommand() {
 		messages = new MessageManager();
@@ -43,6 +45,12 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		tpcooldown = new ArrayList<String>();
 		data.loadClans();
 		data.loadPlayer();
+		if(config.luckpermsEnable("general")) {
+			luckperms = new LuckpermsManager();
+			if(config.luckpermsEnable("leader")) {
+				luckperms.setupLeaderGroup();
+			}
+		}
 	}
 	
 	@Override
@@ -62,8 +70,16 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				data.loadPlayer();
 				if(!new File(Main.getPlugin().getDataFolder(), "config.yml").exists()) {
 					Main.getPlugin().saveDefaultConfig();
-				}else
+				}else {
 					config.reload();
+				}
+				Main.getPlugin().loadPlugins();
+				if(config.luckpermsEnable("general")) {
+					luckperms = new LuckpermsManager();
+					if(config.luckpermsEnable("leader")) {
+						luckperms.setupLeaderGroup();
+					}
+				}
 				s.sendMessage(messages.get("plugin-reloaded"));
 			}else
 				s.sendMessage(messages.get("no-permission"));
@@ -243,6 +259,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					if(p.hasPermission("smartclans.delete")) {
 						if(args[1].equalsIgnoreCase(data.getClan(p))) {
 							p.sendMessage(messages.get("clan-deleted").replace("%clan%", data.getClan(p)));
+							luckperms.removePlayerFromLeader(p);
 							data.deleteClan(data.getClan(p));
 						}else
 							p.sendMessage(messages.get("confirmname-not-match"));

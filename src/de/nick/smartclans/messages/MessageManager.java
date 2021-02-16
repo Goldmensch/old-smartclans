@@ -128,4 +128,8 @@ public class MessageManager {
 		
 	}
 	
+	public int getVersion() {
+		return config.getInt("version");
+	}
+	
 }

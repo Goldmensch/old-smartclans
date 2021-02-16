@@ -4,6 +4,7 @@ author: goldmensch
 main: de.nick.smartclans.main.Main
 api-version: 1.16
 prefix: SmartClans
+softdepend: [LuckPerms]
 
 commands:
   clans:

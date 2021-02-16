@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 
 import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.main.Main;
+import de.nick.smartclans.plugins.luckperms.LuckpermsManager;
 import de.nick.smartclans.teams.TeamManager;
 
 public class DataManager {
@@ -32,6 +33,8 @@ public class DataManager {
 	
 	private ConfigManager config;
 	private TeamManager teams;
+	
+	private LuckpermsManager luckperms;
 	
 	private HashMap<String, YamlConfiguration> clansconfigs;
 	private HashMap<String, File> clansfiles;
@@ -77,6 +80,11 @@ public class DataManager {
 			teams.addTeam(clanname);
 			teams.addToTeam(leader);
 			teams.addPlaceholder(clanname);
+		}
+		//luckperms
+		if(config.luckpermsEnable("general")) {
+			luckperms = new LuckpermsManager();
+			luckperms.addPlayerToLeader(leader);
 		}
 		return true;
 	}

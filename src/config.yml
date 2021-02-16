@@ -1,5 +1,5 @@
 # don't change!
-version: 1
+version: 2
 
 #----------Invites----------#
 # Time in minutes until an invite expires. Can take longer depending on the server TPS!
@@ -16,3 +16,12 @@ max-clanname-lenght: 8
 clan-base: true
 # Sets the cooldown for /clans base in minutes. It is disabled at 0.
 clan-base-cooldown: 5
+
+#-------PluginSupport-------#
+# This plugin can interact with selected plugins.
+luckperms:
+  enable: false
+  leader:
+    enable: false
+    groupname: clan-leader
+    permissions: []

@@ -12,17 +12,22 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.nick.smartclans.commands.*;
+import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.listener.PlayerJoinListener;
 import de.nick.smartclans.listener.PlayerLeaveListener;
 import de.nick.smartclans.messages.MessageManager;
+import net.luckperms.api.LuckPerms;
 
 public class Main extends JavaPlugin{
 	
 	private static Main plugin;
 	private MessageManager messages;
+	private static LuckPerms luckperms;
+	private ConfigManager config;
 	
 	public void onEnable() {
 		//start
@@ -30,15 +35,30 @@ public class Main extends JavaPlugin{
 		//general
 		plugin = this;
 		messages = new MessageManager();
+		config = new ConfigManager();		
 		
 		/*-----files-----*/
 		if(!new File(getDataFolder(), "config.yml").exists()) {
 			saveDefaultConfig();
 		}
 		if(!messages.getFile().exists()) {
- 		messages = new MessageManager();
 			messages.saveDefaults();
 		}
+		/*--checkversions--*/
+		if(messages.getVersion() != 1) {
+			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Message File, please update!");
+			Bukkit.getPluginManager().disablePlugin(plugin);
+			return;
+		}
+		if(config.getVersion() != 2) {
+			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Config File, please update!");
+			Bukkit.getPluginManager().disablePlugin(plugin);
+			return;
+		}
+		
+		/*-----Plugins-----*/
+		loadPlugins();
+		
 		//commnds
 		ClansCommand clanscommand = new ClansCommand();
 		getCommand("clans").setExecutor(clanscommand);
@@ -49,11 +69,24 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new PlayerJoinListener(), plugin);
 		pm.registerEvents(new PlayerLeaveListener(), plugin);
 		
-		
 	}
 	
 	public static Main getPlugin() {
 		return plugin;
+	}
+	
+	public static LuckPerms getLuckperms() {
+		return luckperms;
+	}
+	
+	public void loadPlugins() {
+		//luckperms
+		if(config.luckpermsEnable("general")) {
+			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			if (provider != null) {
+				luckperms = provider.getProvider();   
+			}
+		}		
 	}
 	
 }

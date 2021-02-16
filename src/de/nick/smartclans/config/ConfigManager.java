@@ -8,6 +8,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 package de.nick.smartclans.config;
 
+import java.util.List;
+
 import de.nick.smartclans.main.Main;
 
 public class ConfigManager {
@@ -36,6 +38,36 @@ public class ConfigManager {
 	
 	public boolean clanbaseEnable() {
 		return main.getConfig().getBoolean("clan-base");
+	}
+	
+	public boolean luckpermsEnable(String value) {
+		if(value.equalsIgnoreCase("general")) {
+			return main.getConfig().getBoolean("luckperms.enable");
+		}
+		if(value.equalsIgnoreCase("leader")) {
+			return main.getConfig().getBoolean("luckperms.leader.enable");
+			}else {
+				return main.getConfig().getBoolean("luckperms.coleader.enable");
+			}
+	}
+	
+	public List<String> getluckperms(String value) {
+		if(value.equalsIgnoreCase("leader")) {
+			return main.getConfig().getStringList("luckperms.leader.permissions");
+		}else {
+			return main.getConfig().getStringList("luckperms.coleader.permissions");
+		}
+	}
+	
+	public String getluckpermsGroupName(String value) {
+		if(value.equalsIgnoreCase("leader")) {
+			return main.getConfig().getString("luckperms.leader.groupname");
+		}
+		return null;
+	}
+	
+	public int getVersion() {
+		return main.getConfig().getInt("version");
 	}
 	
 }
