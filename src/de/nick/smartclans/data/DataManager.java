@@ -199,7 +199,7 @@ public class DataManager {
 		setClanData(clan, "members", members);
 		setPlayerData(member, "clan", clan);
 		setPlayerData(member, "position", "member");
-		
+		teams.addToTeam(member);
 	}
 	
 	public void removeMember(String clan, Player member) {
@@ -211,6 +211,7 @@ public class DataManager {
 		setClanData(clan, "members", members);
 		setPlayerData(member, "clan", null);
 		setPlayerData(member, "position", null);
+		teams.removeFromTeam(member);
 	}
 	
 	public TeamManager getTeamManager() {
@@ -226,6 +227,7 @@ public class DataManager {
 	
 	public List<String> getBanned(String clan) {
 		clanconfig = clansconfigs.get(clan + ".yml");
+		
 		return clanconfig.getStringList("banned");
 	}
 	
