@@ -21,7 +21,13 @@ clan-base-cooldown: 5
 # This plugin can interact with selected plugins.
 luckperms:
   enable: false
+  # If this function is enabled, the clan leader will be given extra permissions when creating a clan.
   leader:
     enable: false
+    # The plugin creates an extra permission group for the permissions and assigns this group to the player. Here you can set the name. Attention! Changing this value after activation can lead to errors!
     groupname: clan-leader
+    # The list of permissions this group should contain. For example: (delete '[]')
+    # permissions: 
+    # - smartclans.info
+    # - server.broadcast
     permissions: []

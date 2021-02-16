@@ -20,6 +20,7 @@ import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.listener.PlayerJoinListener;
 import de.nick.smartclans.listener.PlayerLeaveListener;
 import de.nick.smartclans.messages.MessageManager;
+import de.nick.smartclans.metrics.Metrics;
 import net.luckperms.api.LuckPerms;
 
 public class Main extends JavaPlugin{
@@ -69,6 +70,8 @@ public class Main extends JavaPlugin{
 		pm.registerEvents(new PlayerJoinListener(), plugin);
 		pm.registerEvents(new PlayerLeaveListener(), plugin);
 		
+		/*-----bstats-----*/
+		initalBstats();
 	}
 	
 	public static Main getPlugin() {
@@ -87,6 +90,11 @@ public class Main extends JavaPlugin{
 				luckperms = provider.getProvider();   
 			}
 		}		
+	}
+	
+	private void initalBstats() {
+		@SuppressWarnings("unused")
+		Metrics metrics = new Metrics(plugin, 10354);
 	}
 	
 }
