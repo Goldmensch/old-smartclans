@@ -34,4 +34,8 @@ public class ConfigManager {
 		return main.getConfig().getBoolean("use-minecraft-teams");
 	}
 	
+	public boolean clanbaseEnable() {
+		return main.getConfig().getBoolean("clan-base");
+	}
+	
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,12 +33,14 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	private DataManager data;
 	private HashMap<String, String> invites;
 	private ConfigManager config;
+	private ArrayList<String> tpcooldown;
 	
 	public ClansCommand() {
 		messages = new MessageManager();
 		data = new DataManager();
 		config = new ConfigManager();
 		invites = new HashMap<String, String>();
+		tpcooldown = new ArrayList<String>();
 		data.loadClans();
 		data.loadPlayer();
 	}
@@ -160,6 +163,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		/*----ClanSection----*/
 		
 		    /*---members---*/
+			//clan info
 			if(args[0].equalsIgnoreCase("info") && (args.length == 1)) {
 				if(s.hasPermission("smartclans.info")) {
 					for(String msg : getClanInfo(data.getClan(p))) {
@@ -169,7 +173,37 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					p.sendMessage(messages.get("no-permission"));
 				return false;
 			}
-			
+			//clanbase teleport
+			if(args[0].equalsIgnoreCase("base") && (args.length == 1)) {
+				if(!config.clanbaseEnable()) {
+					return false;
+				}
+				if(tpcooldown.contains(p.getName())) {
+					p.sendMessage(messages.get("teleport-cooldown-wait"));
+					return false;
+				}
+				Location loc = (Location) data.getClanData(data.getClan(p), "clanbase");
+				if(loc == null) {
+					p.sendMessage(messages.get("no-clanbase"));
+					return false;
+				}
+				p.teleport(loc);
+				p.sendMessage(messages.get("clanbase-teleport"));
+				if(config.getInt("clan-base-cooldown") > 0) {
+					tpcooldown.add(p.getName());
+					Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
+						
+						@Override
+						public void run() {
+							if(tpcooldown.contains(p.getName())) {
+								tpcooldown.remove(p.getName());
+							}
+						}
+					}, config.getInt("clan-base-cooldown") * 60 * 20);
+				}
+				return false;
+			}
+			//clan leave
 			if(args[0].equalsIgnoreCase("leave") && (args.length == 1)) {
 				if(p.hasPermission("smartclans.leave")) {
 					if(data.isLeader(p)) {
@@ -273,6 +307,16 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						data.setPlayerData(target, "position", "member");
 						p.sendMessage(messages.get("coleader-removed").replace("%player%", target.getName()));
 						return false;
+					}
+				}
+				//clanbase set
+				if(args[0].equalsIgnoreCase("set") && (args.length == 2)) {
+					if(args[1].equalsIgnoreCase("clanbase")) {
+						if(config.clanbaseEnable()) {
+							data.setClanData(data.getClan(p), "clanbase", p.getLocation());
+							p.sendMessage(messages.get("clanbase-set"));
+							return false;
+						}
 					}
 				}
 				
@@ -466,6 +510,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		}
 		
 		/*in clan*/
+			if(config.clanbaseEnable()) help.add(messages.getPrefix() + "§8/clans base");
 		
 			/*clanleader*/
 			if(data.isLeader(p)) {
@@ -473,6 +518,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				help.add(messages.getPrefix() + "§8/clans add coleader <playername>");
 				help.add(messages.getPrefix() + "§8/clans set description <description>");
 				help.add(messages.getPrefix() + "§8/clans remove coleader <playername>");
+				if(config.clanbaseEnable()) help.add(messages.getPrefix() + "§8/clans set clanbase");
 			}
 			/*clancoleader*/
 			if(data.isCoLeader(p)) {
@@ -526,6 +572,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(data.isCoLeader(p) && "kick".startsWith(args[0])) completions.add("kick");
 				if(data.isCoLeader(p) && "ban".startsWith(args[0])) completions.add("ban");
 				if(data.isCoLeader(p) && "unban".startsWith(args[0])) completions.add("unban");
+				if(config.clanbaseEnable() && "base".startsWith(args[0])) completions.add("base");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
@@ -544,6 +591,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						completions.add(target.getName());
 					}
 				}
+				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && config.clanbaseEnable() && "clanbase".startsWith(args[1])) completions.add("clanbase");
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {

@@ -10,3 +10,9 @@ invite-expires-after: 3
 use-minecraft-teams: true
 # Limits the clan name length. It is recommended not to set the length higher than 12, from 16 errors can occur!
 max-clanname-lenght: 8
+
+#---------Functions---------#
+# Defines whether the clan base should be activated.
+clan-base: true
+# Sets the cooldown for /clans base in minutes. It is disabled at 0.
+clan-base-cooldown: 5

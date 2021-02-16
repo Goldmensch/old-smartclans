@@ -72,6 +72,10 @@ public class MessageManager {
 		defaults.put("youre-banned", "§cYou are banned from the clan %clan%.");
 		defaults.put("player-not-banned", "§cThe player %player% isn't banned.");
 		defaults.put("player-unbanned", "§aThe player %player% has been unbanned.");
+		defaults.put("clanbase-set", "§aThe clanbase was set.");
+		defaults.put("no-clanbase", "§cNo clanbase was set.");
+		defaults.put("clanbase-teleport", "§aYou were teleported to the clan base.");
+		defaults.put("teleport-cooldown-wait", "§cPlease wait for the cooldown.");
 	}
 	
 	public void saveDefaults() {

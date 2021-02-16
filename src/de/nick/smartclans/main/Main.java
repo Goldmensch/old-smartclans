@@ -39,7 +39,6 @@ public class Main extends JavaPlugin{
  		messages = new MessageManager();
 			messages.saveDefaults();
 		}
-		messages.saveDefaults();
 		//commnds
 		ClansCommand clanscommand = new ClansCommand();
 		getCommand("clans").setExecutor(clanscommand);

@@ -1,5 +1,5 @@
 name: SmartClans
-version: 0.0.9
+version: 0.1.0
 author: goldmensch
 main: de.nick.smartclans.main.Main
 api-version: 1.16
@@ -9,3 +9,17 @@ commands:
   clans:
     description: The main command of smartclans.
     aliases: clan
+    
+permissions:
+  smartclans.reload:
+    description: allows you to reload the configs
+  smartclans.info.others:
+    description: allows you to see the info about other clans
+  smartclans.create:
+    description: allows you to create a clan
+  smartclans.info:
+    description: allows you to see the info about your clan
+  smartclans.leave:
+    description: allows you to leave a clan
+  smartclans.delete:
+    description: allows you to delete your clan
