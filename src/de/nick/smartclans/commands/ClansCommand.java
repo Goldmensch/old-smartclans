@@ -385,7 +385,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						p.sendMessage(messages.get("player-not-in-clan").replace("%player%", target.getName()));
 						return false;
 					}
-					if(data.isCoLeader(p)) {
+					if(data.isCoLeader(target)) {
 						p.sendMessage(messages.get("you-cannot-kick-player").replace("%player%", target.getName()));
 						return false;
 					}
