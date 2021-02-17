@@ -1,5 +1,5 @@
 name: SmartClans
-version: 0.1.3
+version: 0.1.4
 author: goldmensch
 main: de.nick.smartclans.main.Main
 api-version: 1.16

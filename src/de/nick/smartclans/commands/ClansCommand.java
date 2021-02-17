@@ -38,15 +38,15 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	private LuckpermsManager luckperms;
 	
 	public ClansCommand() {
-		messages = new MessageManager();
-		data = new DataManager();
-		config = new ConfigManager();
+		messages = Main.getMessagesManager();
+		data = Main.getDataManager();
+		config = Main.getConfigManager();
 		invites = new HashMap<String, String>();
 		tpcooldown = new ArrayList<String>();
 		data.loadClans();
 		data.loadPlayer();
 		if(config.luckpermsEnable("general")) {
-			luckperms = new LuckpermsManager();
+			luckperms = Main.getLuckpermsMananger();
 			if(config.luckpermsEnable("leader")) {
 				luckperms.setupLeaderGroup();
 			}
@@ -75,7 +75,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				}
 				Main.getPlugin().loadPlugins();
 				if(config.luckpermsEnable("general")) {
-					luckperms = new LuckpermsManager();
+					luckperms = Main.getLuckpermsMananger();
 					if(config.luckpermsEnable("leader")) {
 						luckperms.setupLeaderGroup();
 					}
@@ -259,7 +259,11 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					if(p.hasPermission("smartclans.delete")) {
 						if(args[1].equalsIgnoreCase(data.getClan(p))) {
 							p.sendMessage(messages.get("clan-deleted").replace("%clan%", data.getClan(p)));
-							luckperms.removePlayerFromLeader(p);
+							if(config.luckpermsEnable("general")) {
+								if(config.luckpermsEnable("leader")) {
+									luckperms.removePlayerFromLeader(p);
+								}
+							}
 							data.deleteClan(data.getClan(p));
 						}else
 							p.sendMessage(messages.get("confirmname-not-match"));
@@ -272,7 +276,6 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(args[0].equalsIgnoreCase("add") && (args.length > 2)) {
 					if(args[1].equalsIgnoreCase("coleader") && (args.length == 3)) {
 						Player target = Bukkit.getPlayer(args[2]);
-						List<String> coleaders = data.getCoLeaders(data.getClan(p));
 						//check if player online
 						if(target == null) {
 							p.sendMessage(messages.get("player-not-online").replace("%player%", args[2]));
@@ -288,9 +291,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 							p.sendMessage(messages.get("player-already-coleader-or-leader").replace("%player%", target.getName()));
 							return false;
 						}
-						coleaders.add(target.getUniqueId().toString());
-						data.setClanData(data.getClan(p), "co-leaders", coleaders);
-						data.setPlayerData(target, "position", "coleader");
+						data.addCoLeader(data.getClan(p), target);
 						target.sendMessage(messages.get("you-are-now-coleader-of").replace("%clan%", data.getClan(p)));
 						p.sendMessage(messages.get("co-leader-added").replace("%clan%", data.getClan(p)).replace("%coleader%", target.getName()));
 						return false;
@@ -318,10 +319,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 							p.sendMessage(messages.get("player-not-coleader").replace("%player%", target.getName()));
 							return false;
 						}
-						List<String> coleaders = data.getCoLeaders(data.getClan(p));
-						coleaders.remove(target.getUniqueId().toString());
-						data.setClanData(data.getClan(p), "co-leaders", coleaders);
-						data.setPlayerData(target, "position", "member");
+						data.removeCoLeader(data.getClan(p), target);
 						p.sendMessage(messages.get("coleader-removed").replace("%player%", target.getName()));
 						return false;
 					}

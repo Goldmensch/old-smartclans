@@ -23,7 +23,7 @@ public class LuckpermsManager {
 	private ConfigManager config;
 	
 	public LuckpermsManager() {
-		config = new ConfigManager();
+		config = Main.getConfigManager();
 	}
 	
 	public void setupLeaderGroup() {

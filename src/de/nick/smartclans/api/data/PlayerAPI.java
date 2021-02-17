@@ -6,29 +6,27 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package de.nick.smartclans.listener;
+package de.nick.smartclans.api.data;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.entity.Player;
 
-import de.nick.smartclans.config.ConfigManager;
+import de.nick.smartclans.data.DataManager;
 import de.nick.smartclans.main.Main;
-import de.nick.smartclans.teams.TeamManager;
 
-public class PlayerJoinListener implements Listener {
+public class PlayerAPI {
 
-	private ConfigManager config;
-	private TeamManager teams;
-	public PlayerJoinListener() {
-		config = Main.getConfigManager();
-		teams = Main.getTeamsManager();
+	DataManager data;
+	
+	public PlayerAPI() {
+		data = Main.getDataManager();
 	}
 	
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		if(config.teamsEnable()) {
-			teams.addToTeam(e.getPlayer());
-		}
+	public String getClannameAsString(Player p) {
+		return data.getClan(p);
 	}
+	
+	public boolean isInClan(Player p) {
+		return data.isInClan(p);
+	}
+	
 }

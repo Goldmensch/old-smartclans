@@ -18,6 +18,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import de.nick.smartclans.api.events.AddCoLeaderEvent;
+import de.nick.smartclans.api.events.ClanCreateEvent;
+import de.nick.smartclans.api.events.ClanDeleteEvent;
+import de.nick.smartclans.api.events.MemberAddEvent;
+import de.nick.smartclans.api.events.MemberRemoveEvent;
+import de.nick.smartclans.api.events.RemoveCoLeaderEvent;
 import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.main.Main;
 import de.nick.smartclans.plugins.luckperms.LuckpermsManager;
@@ -40,8 +46,8 @@ public class DataManager {
 	private HashMap<String, File> clansfiles;
 	
 	public void loadClans() {
-		config = new ConfigManager();
-		teams = new TeamManager();
+		config = Main.getConfigManager();
+		teams = Main.getTeamsManager();
 		clansconfigs = new HashMap<String, YamlConfiguration>();
 		clansfiles = new HashMap<String, File>();
 		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() + "] start loading the clan configs...");
@@ -62,6 +68,7 @@ public class DataManager {
 		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clanname + ".yml");
 		clanconfig = YamlConfiguration.loadConfiguration(clanfile);	
 		if(clanfile.exists()) return false;	
+		Bukkit.getPluginManager().callEvent(new ClanCreateEvent(clanname, leader));
 		clanconfig.set("name", clanname);
 		clanconfig.set("description", "!empty");
 		clanconfig.set("leader", leader.getUniqueId().toString());
@@ -83,7 +90,7 @@ public class DataManager {
 		}
 		//luckperms
 		if(config.luckpermsEnable("general")) {
-			luckperms = new LuckpermsManager();
+			luckperms = Main.getLuckpermsMananger();
 			luckperms.addPlayerToLeader(leader);
 		}
 		return true;
@@ -153,6 +160,7 @@ public class DataManager {
 	}
 	
 	public void deleteClan(String clan) {
+		Bukkit.getPluginManager().callEvent(new ClanDeleteEvent(clan));
 		teams.removeTeam(clan);
 		clanconfig = clansconfigs.get(clan + ".yml");
 		clanfile = clansfiles.get(clan + ".yml");
@@ -191,6 +199,7 @@ public class DataManager {
 	}
 	
 	public void addMember(String clan, Player member) {
+		Bukkit.getPluginManager().callEvent(new MemberAddEvent(clan, member));
 		if(config.teamsEnable()) {
 			teams.addToTeam(member);
 		}
@@ -203,6 +212,7 @@ public class DataManager {
 	}
 	
 	public void removeMember(String clan, Player member) {
+		Bukkit.getPluginManager().callEvent(new MemberRemoveEvent(clan, member));
 		if(config.teamsEnable()) {
 			teams.removeFromTeam(member);
 		}
@@ -235,5 +245,21 @@ public class DataManager {
 		List<String> banned = getBanned(clan);
 		banned.remove(p.getUniqueId().toString());
 		setClanData(clan, "banned", banned);
+	}
+	
+	public void addCoLeader(String clan, Player p) {
+		Bukkit.getPluginManager().callEvent(new AddCoLeaderEvent(clan, p));
+		List<String> coleaders = getCoLeaders(clan);
+		coleaders.add(p.getUniqueId().toString());
+		setClanData(clan, "co-leaders", coleaders);
+		setPlayerData(p, "position", "coleader");
+	}
+	
+	public void removeCoLeader(String clan, Player p) {
+		Bukkit.getPluginManager().callEvent(new RemoveCoLeaderEvent(clan, p));
+		List<String> coleaders = getCoLeaders(clan);
+		coleaders.remove(p.getUniqueId().toString());
+		setClanData(clan, "co-leaders", coleaders);
+		setPlayerData(p, "position", "member");
 	}
 }

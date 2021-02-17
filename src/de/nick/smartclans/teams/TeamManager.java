@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
 import de.nick.smartclans.data.DataManager;
+import de.nick.smartclans.main.Main;
 
 public class TeamManager {
 
@@ -20,7 +21,7 @@ public class TeamManager {
 	private DataManager data;
 	public TeamManager() {
 		scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-		data = new DataManager();
+		data = Main.getDataManager();
 	}
 	
 	public void addToTeam(Player p) {

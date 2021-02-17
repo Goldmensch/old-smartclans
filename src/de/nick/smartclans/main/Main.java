@@ -15,20 +15,27 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.nick.smartclans.api.SmartclansAPI;
 import de.nick.smartclans.commands.*;
 import de.nick.smartclans.config.ConfigManager;
+import de.nick.smartclans.data.DataManager;
 import de.nick.smartclans.listener.PlayerJoinListener;
 import de.nick.smartclans.listener.PlayerLeaveListener;
 import de.nick.smartclans.messages.MessageManager;
 import de.nick.smartclans.metrics.Metrics;
+import de.nick.smartclans.plugins.luckperms.LuckpermsManager;
+import de.nick.smartclans.teams.TeamManager;
 import net.luckperms.api.LuckPerms;
 
 public class Main extends JavaPlugin{
 	
 	private static Main plugin;
-	private MessageManager messages;
+	private static MessageManager messages;
 	private static LuckPerms luckperms;
-	private ConfigManager config;
+	private static ConfigManager config;
+	private static DataManager data;
+	private static TeamManager teams;
+	private static LuckpermsManager luckpermsmanager;
 	
 	public void onEnable() {
 		//start
@@ -36,7 +43,10 @@ public class Main extends JavaPlugin{
 		//general
 		plugin = this;
 		messages = new MessageManager();
-		config = new ConfigManager();		
+		config = new  ConfigManager();
+		data = new DataManager();
+		teams = new TeamManager();
+		luckpermsmanager = new LuckpermsManager();
 		
 		/*-----files-----*/
 		if(!new File(getDataFolder(), "config.yml").exists()) {
@@ -97,4 +107,23 @@ public class Main extends JavaPlugin{
 		Metrics metrics = new Metrics(plugin, 10354);
 	}
 	
+	public static ConfigManager getConfigManager() {
+		return config;
+	}
+	
+	public static MessageManager getMessagesManager() {
+		return messages;
+	}
+	
+	public static DataManager getDataManager() {
+		return data;
+	}
+	
+	public static TeamManager getTeamsManager() {
+		return teams;
+	}
+	
+	public static LuckpermsManager getLuckpermsMananger() {
+		return luckpermsmanager;
+	}	
 }
