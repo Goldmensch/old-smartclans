@@ -6,7 +6,7 @@ A smart clans plugin for Spigot.
 Here are listed the different classes of the Smartclans API.
 
 #### SmartclansAPI
-To use the API, the class "SmartclansAPI" must be present as a reference variable.
+To use the API, the class "SmartclansAPI" must be present as a reference variable. *The API is not complete and will be extended soon!*
 
 ![SmartclansAPI](https://github.com/Goldmensch/smartclans/blob/main/pictures/smartclansapi.png)
 
