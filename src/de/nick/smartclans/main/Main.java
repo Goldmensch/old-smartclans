@@ -15,7 +15,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.nick.smartclans.api.SmartclansAPI;
 import de.nick.smartclans.commands.*;
 import de.nick.smartclans.config.ConfigManager;
 import de.nick.smartclans.data.DataManager;

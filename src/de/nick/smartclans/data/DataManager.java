@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import de.nick.smartclans.api.events.AddCoLeaderEvent;
+import de.nick.smartclans.api.events.ClanCreateCompleteEvent;
 import de.nick.smartclans.api.events.ClanCreateEvent;
 import de.nick.smartclans.api.events.ClanDeleteEvent;
 import de.nick.smartclans.api.events.MemberAddEvent;
@@ -93,6 +94,7 @@ public class DataManager {
 			luckperms = Main.getLuckpermsMananger();
 			luckperms.addPlayerToLeader(leader);
 		}
+		Bukkit.getPluginManager().callEvent(new ClanCreateCompleteEvent(clanname, leader));
 		return true;
 	}
 	

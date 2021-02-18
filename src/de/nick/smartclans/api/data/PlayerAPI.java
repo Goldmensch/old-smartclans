@@ -29,4 +29,8 @@ public class PlayerAPI {
 		return data.isInClan(p);
 	}
 	
+	public String getPosition(Player p) {
+		return data.getPosition(p);
+	}
+	
 }

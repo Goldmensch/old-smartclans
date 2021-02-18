@@ -226,13 +226,13 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 						p.sendMessage(messages.get("you-cant-leave"));
 						return false;
 					}
-					data.removeMember(data.getClan(p), p);
-					p.sendMessage(messages.get("you-left").replace("%clan%", p.getName()));
 					for(String uuid : data.getMembers(data.getClan(p))) {
 						Player target = Bukkit.getPlayer(uuid);
 						if(target == null) continue;
 						target.sendMessage(messages.get("player-left").replace("%player%", p.getName()));
 					}
+					data.removeMember(data.getClan(p), p);
+					p.sendMessage(messages.get("you-left").replace("%clan%", p.getName()));
 					return false;
 				}else
 					p.sendMessage(messages.get("no-permission"));
