@@ -287,7 +287,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 							return false;
 						}
 						//check if target already leader or co leader
-						if(data.getPosition(p).equalsIgnoreCase("coleader") || data.getPosition(p).equalsIgnoreCase("leader")) {
+						if(data.getPosition(target).equalsIgnoreCase("coleader") || data.getPosition(target).equalsIgnoreCase("leader")) {
 							p.sendMessage(messages.get("player-already-coleader-or-leader").replace("%player%", target.getName()));
 							return false;
 						}
