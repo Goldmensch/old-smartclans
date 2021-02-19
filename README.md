@@ -1,6 +1,9 @@
 # smartclans
 A smart clans plugin for Spigot.
 
+## Spigot Page
+https://www.spigotmc.org/resources/smartclans.89074/
+
 ## for Devs
 ### API
 Here are listed the different classes of the Smartclans API.
@@ -18,6 +21,9 @@ To use the API, the class "SmartclansAPI" must be present as a reference variabl
 
 #### Events
 ![SmartclansAPI](https://github.com/Goldmensch/smartclans/blob/main/pictures/events.png)
+
+## bstats
+[<img src="https://bstats.org/signatures/bukkit/smartclans.svg">](https://bstats.org/plugin/bukkit/smartclans/10354)
 
 ## License
 This source code is licensed under the GNU GENERAL PUBLIC LICENSE version 3. See [LISENCE](https://github.com/Goldmensch/smartclans/blob/main/LICENSE)
