@@ -15,7 +15,7 @@ max-clanname-lenght: 8
 # Defines whether the clan base should be activated.
 clan-base: true
 # Sets the cooldown for /clans base in minutes. It is disabled at 0.
-#lan-base-cooldown: 5
+clan-base-cooldown: 5
 # Defines if the clan chat should be activated.
 clan-chat: true
 
