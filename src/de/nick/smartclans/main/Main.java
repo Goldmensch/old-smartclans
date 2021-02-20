@@ -73,6 +73,7 @@ public class Main extends JavaPlugin{
 		ClansCommand clanscommand = new ClansCommand();
 		getCommand("clans").setExecutor(clanscommand);
 		getCommand("clans").setTabCompleter(clanscommand);
+		getCommand("clanchat").setExecutor(new ClanChatCommand());
 		
 		//events
 		PluginManager pm = Bukkit.getPluginManager();

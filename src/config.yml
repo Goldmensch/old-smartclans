@@ -15,7 +15,9 @@ max-clanname-lenght: 8
 # Defines whether the clan base should be activated.
 clan-base: true
 # Sets the cooldown for /clans base in minutes. It is disabled at 0.
-clan-base-cooldown: 5
+#lan-base-cooldown: 5
+# Defines if the clan chat should be activated.
+clan-chat: true
 
 #-------PluginSupport-------#
 # This plugin can interact with selected plugins.
@@ -24,7 +26,7 @@ luckperms:
   # If this function is enabled, the clan leader will be given extra permissions when creating a clan.
   leader:
     enable: false
-    # The plugin creates an extra permission group for the permissions and assigns this group to the player. Here you can set the name. Attention! Changing this value after activation can lead to errors!
+    # The plugin creates an extra permission group for the permissions and assigns this group to the player. Here you can set the name. Attention! Changing this value while clans are already created can cause errors!
     groupname: clan-leader
     # The list of permissions this group should contain. For example: (delete '[]')
     # permissions: 

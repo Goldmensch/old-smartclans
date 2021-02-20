@@ -10,6 +10,9 @@ commands:
   clans:
     description: The main command of smartclans.
     aliases: clan
+  clanchat:
+    description: Sends a message to the clan
+    aliases: cc
     
 permissions:
   smartclans.reload:

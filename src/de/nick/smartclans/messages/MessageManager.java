@@ -76,6 +76,8 @@ public class MessageManager {
 		defaults.put("no-clanbase", "§cNo clanbase was set.");
 		defaults.put("clanbase-teleport", "§aYou were teleported to the clan base.");
 		defaults.put("teleport-cooldown-wait", "§cPlease wait for the cooldown.");
+		defaults.put("clanchat-prefix", "§6[Clanchat] §r");
+		defaults.put("clanchat-disabled", "§cThe clanchat is disabled.");
 	}
 	
 	public void saveDefaults() {

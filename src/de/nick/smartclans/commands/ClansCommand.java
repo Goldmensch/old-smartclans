@@ -526,6 +526,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		
 		/*in clan*/
 			if(config.clanbaseEnable()) help.add(messages.getPrefix() + "§8/clans base");
+			if(config.clanchatEnable()) help.add(messages.getPrefix() + "§8/cc <nachricht>");
 		
 			/*clanleader*/
 			if(data.isLeader(p)) {

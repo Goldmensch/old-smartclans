@@ -70,4 +70,8 @@ public class ConfigManager {
 		return main.getConfig().getInt("version");
 	}
 	
+	public boolean clanchatEnable() {
+		return main.getConfig().getBoolean("clan-chat");
+	}
+	
 }
