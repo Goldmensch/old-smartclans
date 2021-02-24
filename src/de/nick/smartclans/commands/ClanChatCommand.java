@@ -47,13 +47,13 @@ public class ClanChatCommand implements CommandExecutor{
 			s.sendMessage(messages.getPrefix() + "§cusage: /cc <nachricht>");
 			return false;
 		}
+		Player p = (Player)s;
 		StringBuilder msg = new StringBuilder();
-		msg.append(messages.getRaw("clanchat-prefix"));
+		msg.append(messages.getRaw("clanchat-prefix").replace("%name%", p.getName()));
 		for(int i = 0; i < args.length; i++) {
 			msg.append(args[i]);
 			msg.append(" ");
 		}
-		Player p = (Player)s;
 		if(data.isInClan(p)) {
 			Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), new Runnable() {
 				
