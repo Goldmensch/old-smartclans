@@ -74,4 +74,12 @@ public class ConfigManager {
 		return main.getConfig().getBoolean("clan-chat");
 	}
 	
+	public boolean togglepublicEnable() {
+		return main.getConfig().getBoolean("toggle-public");
+	}
+	
+	public boolean getStandartPublic() {
+		return main.getConfig().getBoolean("standart-public");
+	}
+	
 }

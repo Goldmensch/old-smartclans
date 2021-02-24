@@ -72,6 +72,7 @@ public class DataManager {
 		Bukkit.getPluginManager().callEvent(new ClanCreateEvent(clanname, leader));
 		clanconfig.set("name", clanname);
 		clanconfig.set("description", "!empty");
+		clanconfig.set("public", config.getStandartPublic());
 		clanconfig.set("leader", leader.getUniqueId().toString());
 		clanconfig.set("co-leaders", new ArrayList<String>());
 		clanconfig.set("friendlyfire", true);
@@ -263,5 +264,9 @@ public class DataManager {
 		coleaders.remove(p.getUniqueId().toString());
 		setClanData(clan, "co-leaders", coleaders);
 		setPlayerData(p, "position", "member");
+	}
+	
+	public boolean isPublic(String clan) {
+		return (boolean) getClanData(clan, "public");
 	}
 }

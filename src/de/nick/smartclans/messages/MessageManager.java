@@ -78,10 +78,13 @@ public class MessageManager {
 		defaults.put("teleport-cooldown-wait", "§cPlease wait for the cooldown.");
 		defaults.put("clanchat-prefix", "§6[Clanchat] §7%name%: §r");
 		defaults.put("clanchat-disabled", "§cThe clanchat is disabled.");
+		defaults.put("clan-public", "§aThe clan is now public.");
+		defaults.put("clan-private", "§aThe clan is now private.");
+		defaults.put("clan-not-public", "§cThe clan is not public.");
 	}
 	
 	public void saveDefaults() {
-		config.set("version", 1);
+		config.set("version-dont-modify-me", 2);
 		addDefaults();
 		for(String path : defaults.keySet()) {
 			config.set(path, defaults.get(path));
@@ -131,7 +134,7 @@ public class MessageManager {
 	}
 	
 	public int getVersion() {
-		return config.getInt("version");
+		return config.getInt("version-dont-modify-me");
 	}
 	
 }

@@ -55,7 +55,7 @@ public class Main extends JavaPlugin{
 			messages.saveDefaults();
 		}
 		/*--checkversions--*/
-		if(messages.getVersion() != 1) {
+		if(messages.getVersion() != 2) {
 			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Message File, please update!");
 			Bukkit.getPluginManager().disablePlugin(plugin);
 			return;

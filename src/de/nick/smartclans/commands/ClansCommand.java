@@ -170,6 +170,30 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				return false;
 			}
 			
+			//join
+			if(args[0].equalsIgnoreCase("join") && (args.length == 2)) {
+				if(p.hasPermission("smartclans.join")) {
+					if(data.existClan(args[1])) {
+						if(data.isPublic(args[1])) {
+							data.addMember(args[1], p);
+							p.sendMessage(messages.get("you-joined").replace("%clan%", data.getClan(p)));
+							for(String uuid : data.getMembers(data.getClan(p))) {
+								Player target = Bukkit.getPlayer(uuid);
+								if(target == null) continue;
+								target.sendMessage(messages.get("player-joined").replace("%player%", p.getName()));
+							}
+						}else {
+							p.sendMessage(messages.get("clan-not-public"));
+						}
+					}else {
+						p.sendMessage(messages.get("clan-not-exist"));
+					}
+				}else {
+					p.sendMessage(messages.get("no-permission"));
+				}
+				return false;
+			}
+			
 			//Section - end
 			for(String msg : getHelp(s)) {
 				p.sendMessage(msg);
@@ -335,6 +359,26 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					}
 				}
 				
+				//tooglepublic
+				if(args[0].equalsIgnoreCase("toggle") && (args.length == 2)) {
+					if(args[1].equalsIgnoreCase("public")) {
+						if(config.togglepublicEnable()) {
+							if(p.hasPermission("smartclans.toggleopen")) {
+								if(data.isPublic(data.getClan(p))) {
+									data.setClanData(data.getClan(p), "public", false);
+									p.sendMessage(messages.get("clan-private"));
+								}else {
+									data.setClanData(data.getClan(p), "public", true);
+									p.sendMessage(messages.get("clan-public"));
+								}
+								return false;
+							}else {
+								p.sendMessage(messages.get("no-permissions"));
+							}
+						}
+					}
+				}
+				
 			}
 		    /*---ClanCoLeader---*/
 			if(data.isCoLeader(p)) {
@@ -478,15 +522,15 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			friendlyfire = "§adisable";
 		}
 		
-		
-		
-		info.add(messages.getPrefix() + "§6----------------ClansInfo---------------");
+		info.add(messages.getPrefix() + "§6----------------ClanInfo---------------");
 		info.add(messages.getPrefix() + "§8name: §7" + clan);
 		info.add(messages.getPrefix() + "§8description: §7" + data.getClanData(clan, "description"));
 		info.add(messages.getPrefix() + "§8leader: §7" + Bukkit.getOfflinePlayer(UUID.fromString(data.getClanData(clan, "leader").toString())).getName());
 		info.add(messages.getPrefix() + "§8friendlyfire: " + friendlyfire);
+		info.add(messages.getPrefix() + "§8public: §7" + data.isPublic(clan));
 		info.add(messages.getPrefix() + "§8coleader: §7" + coleadernames);
 		info.add(messages.getPrefix() + "§8members: §7" + membernames);
+		info.add(messages.getPrefix() + "§6----------------ClanInfo---------------");
 		return info;
 	}
 	
@@ -520,6 +564,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			if(s.hasPermission("smartclans.create")) help.add(messages.getPrefix() + "§8/clans create <clanname>");
 			help.add(messages.getPrefix() + "§8/clans decline");
 			help.add(messages.getPrefix() + "§8/clans accept");
+			if(p.hasPermission("smartclans.join")) help.add(messages.getPrefix() + "§8/clans join <clanname>");
 			help.add(messages.getPrefix() + "§6----------------ClansHelp---------------");
 			return help;
 		}
@@ -535,6 +580,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				help.add(messages.getPrefix() + "§8/clans set description <description>");
 				help.add(messages.getPrefix() + "§8/clans remove coleader <playername>");
 				if(config.clanbaseEnable()) help.add(messages.getPrefix() + "§8/clans set clanbase");
+				if(config.togglepublicEnable() && p.hasPermission("smartclans.toggleopen")) help.add(messages.getPrefix() + "§8/clans toggle public");
 			}
 			/*clancoleader*/
 			if(data.isCoLeader(p)) {
@@ -584,18 +630,20 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 				if(data.isCoLeader(p) && "invite".startsWith(args[0])) completions.add("invite");
 				if("leave".startsWith(args[0]) && p.hasPermission("smartclans.leave")) completions.add("leave");
 				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
-				if(data.isCoLeader(p) && "toogle".startsWith(args[0])) completions.add("toggle");
+				if(data.isCoLeader(p) && "toggle".startsWith(args[0])) completions.add("toggle");
 				if(data.isCoLeader(p) && "kick".startsWith(args[0])) completions.add("kick");
 				if(data.isCoLeader(p) && "ban".startsWith(args[0])) completions.add("ban");
 				if(data.isCoLeader(p) && "unban".startsWith(args[0])) completions.add("unban");
 				if(config.clanbaseEnable() && "base".startsWith(args[0])) completions.add("base");
+				if(data.isLeader(p) && config.togglepublicEnable() && "toggle".startsWith(args[0])) completions.add("toggle");
 				break;
 			case 2: 
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("add") && "coleader".startsWith(args[1])) completions.add("coleader");
 				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("invite")) {
 					for(Player target : Bukkit.getOnlinePlayers()) {
-						if(data.isInClan(target)  && target.getName().startsWith(args[1])) continue;
+						if(data.isInClan(target)) continue;
+						if(!target.getName().startsWith(args[1])) continue;
 						completions.add(target.getName());
 					}
 				}
@@ -608,6 +656,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 					}
 				}
 				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && config.clanbaseEnable() && "clanbase".startsWith(args[1])) completions.add("clanbase");
+				if(data.isLeader(p) && config.togglepublicEnable() && p.hasPermission("smartclans.togglepublic") && args[0].equalsIgnoreCase("toggle") && "public".startsWith(args[1])) completions.add("public");
 				break;
 			case 3:
 				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
@@ -629,6 +678,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 			if(s.hasPermission("smartclans.create") && "create".startsWith(args[0])) completions.add("create");
 			if("decline".startsWith(args[0])) completions.add("decline");
 			if("accept".startsWith(args[0])) completions.add("accept");
+			if(p.hasPermission("smartclans.join") && "join".startsWith(args[0])) completions.add("join");
 			break;
 		default:
 			break;

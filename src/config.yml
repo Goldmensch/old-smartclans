@@ -18,6 +18,10 @@ clan-base: true
 clan-base-cooldown: 5
 # Defines if the clan chat should be activated.
 clan-chat: true
+# Defines if you can toggle the clan between public and private.
+toggle-public: true
+# Specifies whether clans should be public (true) or private (false) by default.
+standart-public: false
 
 #-------PluginSupport-------#
 # This plugin can interact with selected plugins.
