@@ -9,11 +9,15 @@ You should have received a copy of the GNU General Public License along with thi
 package de.nick.smartclans.main;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.io.Files;
 
 import de.nick.smartclans.commands.*;
 import de.nick.smartclans.config.ConfigManager;
@@ -66,15 +70,28 @@ public class Main extends JavaPlugin{
 			messages.saveDefaults();
 		}
 		/*--checkversions--*/
-		if(messages.getVersion() != 2) {
-			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Message File, please update!");
-			Bukkit.getPluginManager().disablePlugin(plugin);
-			return;
+		if(messages.getFileVersion() != messages.getVersion()) {
+			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Message File, updating...");
+			HashMap<String, String> current_data = messages.getAsHashMap();
+			messages.addDefaults();
+			for(String key : messages.getDefaults().keySet()) {
+				if(current_data.containsKey(key)) continue;
+				messages.addValue(key, messages.getDefaults().get(key));
+			}
+			messages.getConfig().set("version-dont-modify-me", messages.getVersion());
+			messages.save();
 		}
 		if(config.getVersion() != 2) {
-			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Config File, please update!");
-			Bukkit.getPluginManager().disablePlugin(plugin);
-			return;
+			Bukkit.getConsoleSender().sendMessage("[SmartClans] §4Old Config File, updating...");
+			File current_config = new File(getDataFolder() + File.separator + "config.yml");
+			File backup__config = new File(getDataFolder() + File.separator + "pre_" + getDescription().getVersion() + "_config.yml");
+			try {
+				Files.copy(current_config, backup__config);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			current_config.delete();
+			config.saveDefaults();
 		}
 		
 		/*-----Plugins-----*/

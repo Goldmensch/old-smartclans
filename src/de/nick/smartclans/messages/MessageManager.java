@@ -22,6 +22,7 @@ public class MessageManager {
 	private File file;
 	private YamlConfiguration config;
 	private HashMap<String, Object> defaults;
+	private int version = 2;
 	
 	public MessageManager() {
 		file = new File(Main.getPlugin().getDataFolder(), "messages.yml");
@@ -84,7 +85,7 @@ public class MessageManager {
 	}
 	
 	public void saveDefaults() {
-		config.set("version-dont-modify-me", 2);
+		config.set("version-dont-modify-me", version);
 		addDefaults();
 		for(String path : defaults.keySet()) {
 			config.set(path, defaults.get(path));
@@ -133,8 +134,32 @@ public class MessageManager {
 		
 	}
 	
-	public int getVersion() {
+	public int getFileVersion() {
 		return config.getInt("version-dont-modify-me");
+	}
+	
+	public HashMap<String, String> getAsHashMap() {
+		HashMap<String, String> values = new HashMap<String, String>();
+		for(String key : config.getKeys(false)) {
+			values.put(key, config.getString(key));
+		}
+		return values;
+	}
+	
+	public HashMap<String, Object> getDefaults() {
+		return defaults;
+	}
+	
+	public void addValue(String key, Object value) {
+		config.set(key, value);
+	}
+	
+	public YamlConfiguration getConfig() {
+		return config;
+	}
+	
+	public int getVersion() {
+		return version;
 	}
 	
 }
