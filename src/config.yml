@@ -10,6 +10,8 @@ invite-expires-after: 3
 use-minecraft-teams: true
 # Limits the clan name length. It is recommended not to set the length higher than 12, from 16 errors can occur!
 max-clanname-lenght: 8
+# Determines whether the plugin should check for updates when loading.
+update-checker: true
 
 #---------Functions---------#
 # Defines whether the clan base should be activated.

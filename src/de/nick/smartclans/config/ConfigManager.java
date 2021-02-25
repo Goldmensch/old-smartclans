@@ -82,4 +82,8 @@ public class ConfigManager {
 		return main.getConfig().getBoolean("standart-public");
 	}
 	
+	public boolean UpdateCheckerEnable() {
+		return main.getConfig().getBoolean("update-checker");
+	}
+	
 }

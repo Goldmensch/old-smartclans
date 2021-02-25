@@ -24,6 +24,7 @@ import de.nick.smartclans.messages.MessageManager;
 import de.nick.smartclans.metrics.Metrics;
 import de.nick.smartclans.plugins.luckperms.LuckpermsManager;
 import de.nick.smartclans.teams.TeamManager;
+import de.nick.smartclans.update.PluginVersionChecker;
 import net.luckperms.api.LuckPerms;
 
 public class Main extends JavaPlugin{
@@ -37,7 +38,6 @@ public class Main extends JavaPlugin{
 	private static LuckpermsManager luckpermsmanager;
 	
 	public void onEnable() {
-		//start
 		
 		//general
 		plugin = this;
@@ -46,6 +46,17 @@ public class Main extends JavaPlugin{
 		data = new DataManager();
 		teams = new TeamManager();
 		luckpermsmanager = new LuckpermsManager();
+		
+		//update checker
+		if(config.UpdateCheckerEnable()) {
+			new PluginVersionChecker(89074).getVersion(version -> {
+            	if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                	Bukkit.getConsoleSender().sendMessage("[SmartClans] §aThere is not a new update available.");
+            	} else {
+                	Bukkit.getConsoleSender().sendMessage("[SmartClans] §cThere is a new update available.");
+            	}
+        	});
+		}
 		
 		/*-----files-----*/
 		if(!new File(getDataFolder(), "config.yml").exists()) {
