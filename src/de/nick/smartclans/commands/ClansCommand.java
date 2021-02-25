@@ -597,7 +597,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 	/*tabcomplete*/
 	@Override
 	public List<String> onTabComplete(CommandSender s, Command cmd, String label, String[] args) {
-		List<String> completions = new ArrayList<String>();
+		final List<String> completions = new ArrayList<String>();
 		/*console + player*/
 		switch (args.length) {
 		case 1:
@@ -624,45 +624,55 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		if(data.isInClan(p)) {
 			switch (args.length) {
 			case 1:
-				if(data.isLeader(p) && "set".startsWith(args[0])) completions.add("set");
-				if(data.isLeader(p) && "add".startsWith(args[0])) completions.add("add");
-				if(data.isLeader(p) && "delete".startsWith(args[0])) completions.add("delete");
-				if(data.isCoLeader(p) && "invite".startsWith(args[0])) completions.add("invite");
+				if(data.isLeader(p)) {
+					if("set".startsWith(args[0])) completions.add("set");
+					if("add".startsWith(args[0])) completions.add("add");
+					if("delete".startsWith(args[0])) completions.add("delete");
+					if("remove".startsWith(args[0])) completions.add("remove");
+					if(config.togglepublicEnable() && "toggle".startsWith(args[0])) completions.add("toggle");
+				}
+				if(data.isCoLeader(p)) {
+					if("toggle".startsWith(args[0])) completions.add("toggle");
+					if("kick".startsWith(args[0])) completions.add("kick");
+					if("ban".startsWith(args[0])) completions.add("ban");
+					if("unban".startsWith(args[0])) completions.add("unban");
+					if("invite".startsWith(args[0])) completions.add("invite");
+				}			
 				if("leave".startsWith(args[0]) && p.hasPermission("smartclans.leave")) completions.add("leave");
-				if(data.isLeader(p) && "remove".startsWith(args[0])) completions.add("remove");
-				if(data.isCoLeader(p) && "toggle".startsWith(args[0])) completions.add("toggle");
-				if(data.isCoLeader(p) && "kick".startsWith(args[0])) completions.add("kick");
-				if(data.isCoLeader(p) && "ban".startsWith(args[0])) completions.add("ban");
-				if(data.isCoLeader(p) && "unban".startsWith(args[0])) completions.add("unban");
 				if(config.clanbaseEnable() && "base".startsWith(args[0])) completions.add("base");
-				if(data.isLeader(p) && config.togglepublicEnable() && "toggle".startsWith(args[0])) completions.add("toggle");
 				break;
 			case 2: 
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("add") && "coleader".startsWith(args[1])) completions.add("coleader");
-				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("invite")) {
-					for(Player target : Bukkit.getOnlinePlayers()) {
-						if(data.isInClan(target)) continue;
-						if(!target.getName().startsWith(args[1])) continue;
-						completions.add(target.getName());
+				if(data.isLeader(p)) {
+					if(args[0].equalsIgnoreCase("set") && "description".startsWith(args[1])) completions.add("description");
+					if(args[0].equalsIgnoreCase("add") && "coleader".startsWith(args[1])) completions.add("coleader");
+					if(args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
+					if(args[0].equalsIgnoreCase("set") && config.clanbaseEnable() && "clanbase".startsWith(args[1])) completions.add("clanbase");
+					if(config.togglepublicEnable() && p.hasPermission("smartclans.togglepublic") && args[0].equalsIgnoreCase("toggle") && "public".startsWith(args[1])) completions.add("public");
+				}
+				if(data.isCoLeader(p)) {
+					if(args[0].equalsIgnoreCase("invite")) {
+						for(Player target : Bukkit.getOnlinePlayers()) {
+							if(data.isInClan(target)) continue;
+							if(!target.getName().startsWith(args[1])) continue;
+							completions.add(target.getName());
+						}
+					}	
+					if(args[0].equalsIgnoreCase("toggle") && "friendlyfire".startsWith(args[1])) completions.add("friendlyfire");
+					if((args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("ban") || args[0].equalsIgnoreCase("unban"))) {
+						for(Player target : Bukkit.getOnlinePlayers()) {
+							if(!target.getName().startsWith(args[1])) continue;
+							completions.add(target.getName());
+						}
 					}
 				}
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("remove") && "coleader".startsWith(args[1])) completions.add("coleader");
-				if(data.isCoLeader(p) && args[0].equalsIgnoreCase("toggle") && "friendlyfire".startsWith(args[1])) completions.add("friendlyfire");
-				if(data.isCoLeader(p) && (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("ban") || args[0].equalsIgnoreCase("unban"))) {
-					for(Player target : Bukkit.getOnlinePlayers()) {
-						if(!target.getName().startsWith(args[1])) continue;
-						completions.add(target.getName());
-					}
-				}
-				if(data.isLeader(p) && args[0].equalsIgnoreCase("set") && config.clanbaseEnable() && "clanbase".startsWith(args[1])) completions.add("clanbase");
-				if(data.isLeader(p) && config.togglepublicEnable() && p.hasPermission("smartclans.togglepublic") && args[0].equalsIgnoreCase("toggle") && "public".startsWith(args[1])) completions.add("public");
 				break;
 			case 3:
-				if(data.isLeader(p) && args[1].equalsIgnoreCase("coleader")) {
-					for(Player target : Bukkit.getOnlinePlayers()) {
-						if(!target.getName().startsWith(args[2])) continue;
-						completions.add(target.getName());
+				if(data.isLeader(p)) {
+					if(args[1].equalsIgnoreCase("coleader")) {
+						for(Player target : Bukkit.getOnlinePlayers()) {
+							if(!target.getName().startsWith(args[2])) continue;
+							completions.add(target.getName());
+						}
 					}
 				}
 				break;
