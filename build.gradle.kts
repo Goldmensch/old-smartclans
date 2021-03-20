@@ -20,5 +20,4 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc", "spigot-api", "1.16.1-R0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.3")
-    implementation("org.xerial:sqlite-jdbc:3.30.1")
 }
