@@ -7,9 +7,11 @@
 
 plugins {
     java
+    maven
 }
 
-group = "de.nick"
+
+group = "com.github.Goldmensch"
 version = "2.0-SNAPSHOT"
 
 repositories {
