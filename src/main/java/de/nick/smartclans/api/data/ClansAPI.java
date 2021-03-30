@@ -52,5 +52,9 @@ public class ClansAPI {
 	public boolean getFriendlyFire(String clan) {
 		return Boolean.valueOf(data.getClanData(clan, "friendlyfire").toString());
 	}
+
+	public boolean exists(String clan) {
+		return data.existClan(clan);
+	}
 	
 }

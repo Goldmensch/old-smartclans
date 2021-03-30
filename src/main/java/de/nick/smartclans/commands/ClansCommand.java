@@ -523,7 +523,7 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		}
 		
 		info.add(messages.getPrefix() + "§6----------------ClanInfo---------------");
-		info.add(messages.getPrefix() + "§8name: §7" + clan);
+		info.add(messages.getPrefix() + "§8name: §7" + data.getName(clan));
 		info.add(messages.getPrefix() + "§8description: §7" + data.getClanData(clan, "description"));
 		info.add(messages.getPrefix() + "§8leader: §7" + Bukkit.getOfflinePlayer(UUID.fromString(data.getClanData(clan, "leader").toString())).getName());
 		info.add(messages.getPrefix() + "§8friendlyfire: " + friendlyfire);
@@ -600,11 +600,18 @@ public class ClansCommand implements CommandExecutor, TabCompleter{
 		final List<String> completions = new ArrayList<String>();
 		/*console + player*/
 		switch (args.length) {
-		case 1:
-			if("help".startsWith(args[0])) completions.add("help");
-			if(s.hasPermission("smartclans.reload") && "relaod".startsWith(args[0])) completions.add("reload");
-			if(s.hasPermission("smartclans.info") && "info".startsWith(args[0])) completions.add("info");
-			break;
+			case 1:
+				if("help".startsWith(args[0])) completions.add("help");
+				if(s.hasPermission("smartclans.reload") && "relaod".startsWith(args[0])) completions.add("reload");
+				if(s.hasPermission("smartclans.info") && "info".startsWith(args[0])) completions.add("info");
+				break;
+			case 2:
+				if(s.hasPermission("smartclans.info") && args[0].equalsIgnoreCase("info")){
+					for(String current : data.getClannames()) {
+						if(current.toLowerCase().startsWith(args[1].toLowerCase())) completions.add(current);
+					}
+				}
+
 
 		default:
 			break;

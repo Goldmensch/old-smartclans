@@ -45,12 +45,15 @@ public class DataManager {
 	
 	private HashMap<String, YamlConfiguration> clansconfigs;
 	private HashMap<String, File> clansfiles;
+
+	private List<String> clannames;
 	
 	public void loadClans() {
 		config = Main.getConfigManager();
 		teams = Main.getTeamsManager();
 		clansconfigs = new HashMap<String, YamlConfiguration>();
 		clansfiles = new HashMap<String, File>();
+		clannames = new ArrayList<>();
 		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() + "] start loading the clan configs...");
 		File dir = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans");
 		File[] files = dir.listFiles();
@@ -59,8 +62,9 @@ public class DataManager {
 			return;
 		}
 		for(int i = 0; i < files.length; i++) {
-			clansconfigs.put(files[i].getName(), YamlConfiguration.loadConfiguration(files[i]));
-			clansfiles.put(files[i].getName(), files[i]);
+			clansconfigs.put(files[i].getName().toLowerCase(), YamlConfiguration.loadConfiguration(files[i]));
+			clansfiles.put(files[i].getName().toLowerCase(), files[i]);
+			clannames.add(files[i].getName().replace(".yml", ""));
 		}
 		Bukkit.getConsoleSender().sendMessage("[" + Main.getPlugin().getDescription().getPrefix() +  "] " + files.length + " §rclans loaded.");
 	}
@@ -68,7 +72,7 @@ public class DataManager {
 	public boolean createClan(String clanname, Player leader) {	
 		clanfile = new File(Main.getPlugin().getDataFolder() + File.separator + "data" + File.separator + "clans", clanname + ".yml");
 		clanconfig = YamlConfiguration.loadConfiguration(clanfile);	
-		if(clanfile.exists()) return false;	
+		if(existClan(clanname)) return false;
 		Bukkit.getPluginManager().callEvent(new ClanCreateEvent(clanname, leader));
 		clanconfig.set("name", clanname);
 		clanconfig.set("description", "!empty");
@@ -81,8 +85,8 @@ public class DataManager {
 		clanconfig.set("members", members);
 		clanconfig.set("banned", new ArrayList<String>());
 		saveClanFile(clanfile);
-		clansconfigs.put(clanfile.getName(), clanconfig);
-		clansfiles.put(clanfile.getName(), clanfile);
+		clansconfigs.put(clanfile.getName().toLowerCase(), clanconfig);
+		clansfiles.put(clanfile.getName().toLowerCase(), clanfile);
 		setPlayerData(leader, "clan", clanname);
 		setPlayerData(leader, "position", "leader");
 		if(config.teamsEnable()) {
@@ -142,19 +146,19 @@ public class DataManager {
 	}
 	
 	public void setClanData(String clan, String path, Object value) {
-		clanconfig = clansconfigs.get(clan + ".yml");
-		clanfile = clansfiles.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
+		clanfile = clansfiles.get(clan.toLowerCase() + ".yml");
 		clanconfig.set(path, value);
 		saveClanFile(clanfile);
 	}
 	
 	public Object getClanData(String clan, String path) {
-		clanconfig = clansconfigs.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
 		return clanconfig.get(path);
 	}
 	
 	public List<String> getCoLeaders(String clan) {
-		clanconfig = clansconfigs.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
 		return clanconfig.getStringList("co-leaders");
 	}
 	
@@ -163,18 +167,18 @@ public class DataManager {
 	}
 	
 	public void deleteClan(String clan) {
-		Bukkit.getPluginManager().callEvent(new ClanDeleteEvent(clan));
 		teams.removeTeam(clan);
-		clanconfig = clansconfigs.get(clan + ".yml");
-		clanfile = clansfiles.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
+		clanfile = clansfiles.get(clan.toLowerCase() + ".yml");
 		for(String uuid : clanconfig.getStringList("members")) {
 			playerconfig.set(uuid + ".clan", null);
 			playerconfig.set(uuid + ".position", null);
 		}
 		savePlayerData();
-		clansconfigs.remove(clan + ".yml");
-		clansfiles.remove(clan + ".yml");
+		clansconfigs.remove(clan.toLowerCase() + ".yml");
+		clansfiles.remove(clan.toLowerCase() + ".yml");
 		clanfile.delete();
+		Bukkit.getPluginManager().callEvent(new ClanDeleteEvent(clan));
 	}
 	
 	public void loadPlayer() {
@@ -183,12 +187,12 @@ public class DataManager {
 	}
 	
 	public List<String> getMembers(String clan) {
-		clanconfig = clansconfigs.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
 		return clanconfig.getStringList("members");
 	}
 	
 	public boolean existClan(String clan) {
-		if(clansconfigs.containsKey(clan + ".yml")) {
+		if(clansconfigs.containsKey(clan.toLowerCase() + ".yml")) {
 			return true;
 		}else
 			return false;
@@ -202,7 +206,6 @@ public class DataManager {
 	}
 	
 	public void addMember(String clan, Player member) {
-		Bukkit.getPluginManager().callEvent(new MemberAddEvent(clan, member));
 		if(config.teamsEnable()) {
 			teams.addToTeam(member);
 		}
@@ -212,19 +215,21 @@ public class DataManager {
 		setPlayerData(member, "clan", clan);
 		setPlayerData(member, "position", "member");
 		teams.addToTeam(member);
+		Bukkit.getPluginManager().callEvent(new MemberAddEvent(clan, member));
 	}
 	
 	public void removeMember(String clan, Player member) {
-		Bukkit.getPluginManager().callEvent(new MemberRemoveEvent(clan, member));
 		if(config.teamsEnable()) {
 			teams.removeFromTeam(member);
 		}
+		removeCoLeader(clan, member);
 		List<String> members = getMembers(clan);
 		members.remove(member.getUniqueId().toString());
 		setClanData(clan, "members", members);
 		setPlayerData(member, "clan", null);
 		setPlayerData(member, "position", null);
 		teams.removeFromTeam(member);
+		Bukkit.getPluginManager().callEvent(new MemberRemoveEvent(clan, member));
 	}
 	
 	public TeamManager getTeamManager() {
@@ -239,7 +244,7 @@ public class DataManager {
 	}
 	
 	public List<String> getBanned(String clan) {
-		clanconfig = clansconfigs.get(clan + ".yml");
+		clanconfig = clansconfigs.get(clan.toLowerCase() + ".yml");
 		
 		return clanconfig.getStringList("banned");
 	}
@@ -251,22 +256,30 @@ public class DataManager {
 	}
 	
 	public void addCoLeader(String clan, Player p) {
-		Bukkit.getPluginManager().callEvent(new AddCoLeaderEvent(clan, p));
 		List<String> coleaders = getCoLeaders(clan);
 		coleaders.add(p.getUniqueId().toString());
 		setClanData(clan, "co-leaders", coleaders);
 		setPlayerData(p, "position", "coleader");
+		Bukkit.getPluginManager().callEvent(new AddCoLeaderEvent(clan, p));
 	}
 	
 	public void removeCoLeader(String clan, Player p) {
-		Bukkit.getPluginManager().callEvent(new RemoveCoLeaderEvent(clan, p));
 		List<String> coleaders = getCoLeaders(clan);
 		coleaders.remove(p.getUniqueId().toString());
 		setClanData(clan, "co-leaders", coleaders);
 		setPlayerData(p, "position", "member");
+		Bukkit.getPluginManager().callEvent(new RemoveCoLeaderEvent(clan, p));
 	}
 	
 	public boolean isPublic(String clan) {
 		return (boolean) getClanData(clan, "public");
+	}
+
+	public String getName(String clan) {
+		return (String) getClanData(clan, "name");
+	}
+
+	public List<String> getClannames() {
+		return clannames;
 	}
 }
